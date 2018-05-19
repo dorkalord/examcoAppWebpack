@@ -1,0 +1,29 @@
+<div class="row" style="margin-bottom: 10px; font-weight: bold">
+    <div class="col-md-4">Justification</div>
+    <div class="col-md-6">Censor defined severity</div>
+</div>
+<hr style="margin:0px; border-top: 1px solid #ddd;" />
+
+<div *ngFor="let arg of argumentFrorm.controls; let i=index">
+    <div [formGroupName]="arg.value.id">
+        <hr style="margin:0px; border-top: 1px solid #ddd;" />
+        <div class="col-md-4">
+
+            <!--<input type="checkbox" class="form-control" style="display:inline; width:20px; height:20px" formControlName="arg.value.checked"
+                (change)="changeArg($event.target.checked, arg.id, arg.questionID)" />
+-->
+            <div style="display:inline; vertical-align:super"> {{arg.value.text}} </div>
+
+        </div>
+        <div class="col-md-6" *ngIf="arg.value.variable">
+
+            <!--<span> {{arg.value.maxMistakeText}} </span>
+
+            <input type="range" min="arg.value.maxMistakeWeight" max="arg.value.minMistakeWeight" formControlName="arg.value.maxMistakeWeight"
+                (change)="changeSlider($event.target.value, arg.value.id, arg.value.questionID)" />
+            <span class="pull-right"> {{arg.value.minMistakeText}} </span></div>-->
+        </div>
+    </div>
+</div>
+
+<pre> {{argumentFrorm.value |json}} </pre>

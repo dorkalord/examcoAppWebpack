@@ -1,0 +1,297 @@
+<h2>
+    Exam on Course {{currentExam.course.code}}, Student: {{currentAttempt.studentID}}
+</h2>
+Points {{currentAttempt.total}}
+<div class="container panel">
+    <form [formGroup]="myForm">
+        <div class="panel-heading">
+            <h3>Q{{currentQuestionIndex+1}}: {{myForm.value.questionText}}</h3>
+            <div class="row">
+                <div class="col-xs-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" formControlName="completion" (change)="changeCompletion(myForm.value.id, $event.target.value)"
+                                value="Attempted" /> Attempted
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" formControlName="completion" (change)="changeCompletion(myForm.value.id, $event.target.value)"
+                                value="Correct" /> Correct
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" formControlName="completion" (change)="changeCompletion(myForm.value.id, $event.target.value)"
+                                value="Blank" /> Blank
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="container panel" style="background-color: lavender">
+                <div class="panel-heading">
+                    <h4>Justifications</h4>
+                </div>
+                <div class="panel-body">
+                    <div *ngIf="myForm.value.completion !== 'Blank'">
+                        <div class="form-group">
+                            <label>Points</label>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="myForm.value.max" aria-valuemin="0" aria-valuemax="myForm.value.max"
+                                    style="min-width: 2em;" [attr.aria-valuenow]="myForm.value.total" [style.width]="(myForm.value.total/myForm.value.max)*100 + '%'">
+                                    {{myForm.value.total}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="myForm.value.completion === 'Attempted'">
+                        <div class="container panel">
+                            <div class="row" style="margin-bottom: 10px; font-weight: bold">
+                                <div class="col-md-5">Justification</div>
+                                <div class="col-md-5">Censor defined severity</div>
+                            </div>
+                            <hr style="margin:0px; border-top: 1px solid #ddd;" />
+                            <div formArrayName="arguments">
+                                <div *ngFor="let arg of myForm.controls.arguments.controls; let i=index">
+                                    <hr style="margin:0px; border-top: 1px solid #ddd;" />
+                                    <div [formGroupName]="i" class="row" style="padding:5px">
+                                        <div class="col-md-5">
+
+                                            <input type="checkbox" formControlName="apliesTo" style="width:20px; height:20px" (change)="changeArg($event.target.checked, arg.value.id, arg.value.questionID)"
+                                            />
+                                            <div style="display:inline; vertical-align:super"> {{arg.value.text}} </div>
+                                        </div>
+                                        <div class="col-md-5" *ngIf="arg.value.apliesTo && arg.value.variable">
+
+                                            <span> {{arg.value.maxMistakeText}} </span>
+                                            <input type="range" min="{{arg.value.minMistakeWeight}}" max="{{arg.value.maxMistakeWeight}}" formControlName="variableVal"
+                                                (change)="changeSlider($event.target.value, arg.value.id, arg.value.questionID)"
+                                            />
+                                            <span class="pull-right"> {{arg.value.minMistakeText}} </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" class="btn btn-primary" (click)="createJustification()">Create Justification</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-xs-2">
+                                    <label>Adjustment</label>
+                                    <input type="number" value="0" class="form-control" formControlName="adjustment" (change)="changedAdjustment(myForm.value.id, $event)"
+                                        style="min-width: 70px" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <small *ngIf="(myForm.value.adjustment + myForm.value.total) > myForm.value.max" class="text-info">
+                                    Maximum points for the task are {{myForm.value.max}}.
+                                </small>
+                                <small *ngIf="myForm.value.adjustment > 100" class="text-danger">
+                                    You can not add more than 100 points to a task.
+                                </small>
+                                <small *ngIf="myForm.value.adjustment < -100" class="text-danger">
+                                    You can not deduct more than 100 points from a task.
+                                </small>
+                            </div>
+                        </div>
+
+
+                        <div class="container panel">
+                            <div class="panel-heading">
+                                <h4>General criterea</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row" style="margin-bottom: 10px; font-weight: bold">
+                                    <div class="col-md-4">Criterea</div>
+                                    <div class="col-md-2">Impact from mistakes</div>
+                                    <div class="col-md-2">Adjustment</div>
+                                    <div class="col-md-3">Final impact</div>
+                                </div>
+                                <hr style="margin:0px; border-top: 1px solid #ddd;" />
+
+                                <div *ngFor="let crit of critereaDisplayList; let i=index">
+                                    <hr style="margin:0px; border-top: 1px solid #ddd;" />
+                                    <div class="row" style="padding:5px">
+                                        <div class="col-md-4">
+                                            <span style="vertical-align:super"> {{crit.name}} </span>
+                                        </div>
+                                        <div class="col-md-2"> {{crit.calculated}} </div>
+                                        <div class="col-md-2">
+                                            <input type="number" class="form-control" [(ngModel)]="critereaDisplayList[i].adjustment" [ngModelOptions]="{standalone: true}"
+                                                (change)="impactChnaged($event.target.value, i)" style="max-width: 70px" />
+                                            <small *ngIf="(critereaDisplayList[i].adjustment + crit.calculated)>0" class="text-danger">
+                                                The final impact may be a maximum of 0
+                                            </small>
+                                            <small *ngIf="critereaDisplayList[i].adjustment > 100" class="text-danger">
+                                                You can not add more than 100 points to a task.
+                                            </small>
+                                            <small *ngIf="critereaDisplayList[i].adjustment < -100" class="text-danger">
+                                                You can not deduct more than 100 points from a task.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-3"> {{crit.total}} </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comnment</label>
+                        <textarea class="form-control" formControlName="note" (change)="changedNote(myForm.value.id, $event)"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+    <div class="container">
+        <ul class="pagination">
+            <li [ngClass]="(currentQuestionIndex>0)?'active':'disabled'" *ngIf="currentQuestionIndex>0">
+                <a (click)="moveTo(currentQuestionIndex-1)">Previous</a>
+            </li>
+            <li *ngFor="let crit of questionDisplayList; let i=index" [ngClass]="(currentQuestionIndex===i)?'active':''">
+                <a (click)="moveTo(i)">{{i+1}}</a>
+            </li>
+            <li [ngClass]="(currentQuestionIndex<questionDisplayList.length-1)?'active':'disabled'" *ngIf="currentQuestionIndex<questionDisplayList.length-1 && myForm.value.completion!=null">
+                <a (click)="moveTo(currentQuestionIndex+1)">Next</a>
+            </li>
+        </ul>
+        <div class="btn-group pull-right" role="group">
+            <button type="button" class="btn btn-success" (click)="save(currentQuestionIndex)">Save</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="margin-20">
+
+    <pre>currentAttempt {{currentAttempt | json}} </pre>
+    <pre>form {{currentAttempt.generalCritereaImpacts | json }} </pre>
+    <pre>qestion {{currentExam.questions[currentQuestionIndex] | json }} </pre>
+</div>
+
+<div class="modal fade" id="createJustificationModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"
+    #createJustificationModal>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h2>Create Justification</h2>
+                </div>
+                <div class="container panel">
+                    <form [formGroup]="argumentForm" novalidate>
+
+                        <div class="form-group">
+                            <label>Argument</label>
+                            <input type="text" class="form-control" formControlName="text">
+                        </div>
+
+                        <!--<div class="form-group">
+                            <label>Parent argument</label>
+                            <select formControlName="parentArgumentID" class="form-control">
+                                <option *ngFor="let item of arguments.value" [value]="item.id" >{{ item.text }}</option>
+                            </select>
+                        </div>-->
+
+                        <div class="form-group">
+                            <label>Points to be deducted for mistake</label>
+                            <input type="number" min="-100" max="0" class="form-control" formControlName="defaultWeight" (change)="changedDefaultWeight($event)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Advice</label>
+                            <input type="text" class="form-control" formControlName="advice">
+                        </div>
+
+                        <div class="form-group panel-body" style="background-color:beige">
+                            <label>
+                                <input type="checkbox" formControlName="variable"> Censor defined severity </label>
+
+                            <div *ngIf="argumentForm.value.variable">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>Most wrong text</label>
+
+                                        <input type="text" class="form-control" formControlName="maxMistakeText">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Almost correct text</label>
+
+                                        <input type="text" class="form-control" formControlName="minMistakeText">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>Maximum deduction in worst case</label>
+                                        <input type="number" class="form-control" formControlName="maxMistakeWeight">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Minimum deduction in best case</label>
+                                        <input type="number" class="form-control" formControlName="minMistakeWeight">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Genereal criterea</th>
+                                        <th>Impact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let criterea of currentExam.examCriterea; let i=index">
+                                        <td>{{criterea.name}} </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="number" value="0" min="-100" max="0" class="form-control" [(ngModel)]="argumentForm.value.argumentCritereas[i].severity"
+                                                    [ngModelOptions]="{standalone: true}" (change)="updateCriterea($event.target.value, criterea.id)">
+                                                <small *ngIf="argumentForm.value.argumentCritereas[i].severity>0" class="text-danger">
+                                                    Must be negative number
+                                                </small>
+                                                <!--<input #box type="number" value="0" min="0" max="100" class="form-control" 
+                                                    (blur)="updateCriterea(box.value, criterea.id)">-->
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="form-control" class="btn btn-success" (click)="saveJustification()">
+                                Save
+                            </button>
+                            <button type="button" class="form-control" class="btn btn-danger" (click)="cancelJustification()">
+                                Cancel
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="margin-20"></div>
+                <div class="margin-20">
+                    <pre>form value: <br>{{argumentForm.value | json}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

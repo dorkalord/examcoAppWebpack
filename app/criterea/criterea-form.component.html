@@ -1,0 +1,34 @@
+<div [formGroup]="critereaForm" novalidate>
+    <div class="form-group">
+        <label>Criterea</label>
+        <input type="text" class="form-control" formControlName="name">
+    </div>
+
+    <div formArrayName="advices">
+        <div class="container panel" style="background-color: lavender ">
+            <div class="panel-heading">
+                <div class="row" style="margin-bottom: 10px">
+                    <div class="col-md-2"> Grade </div>
+                    <div class="col-md-2" data-toggle="tooltip" data-placement="top" title="% of students that furfill the requriements for the grade">
+                        Top </div>
+                    <div class="col-md-3"> Advice </div>
+                </div>
+            </div>
+            <div *ngFor="let ctrl of critereaForm.controls.advices.controls; let i=index" class="row panel-body" style="padding : 5px">
+                <div [formGroupName]="i">
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" formControlName="grade" disabled>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" formControlName="top" disabled>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" formControlName="text"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Lecturer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let course of courseList ">
+                <td>{{course.code}} - {{course.name}}</td>
+                <td>{{course.lecturerID}}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" [routerLink]="['/course/edit/', course.id]">
+                            Edit
+                        </button>
+                        <button type="button" class="form-control" class="btn btn-danger" (click)="remove(course.id)">
+                             Remove 
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="margin-20">
+    <div>Raw data</div>
+    <pre>User value: <br>{{courseList | json}}</pre>
+</div>

@@ -1,0 +1,33 @@
+<div *ngFor="let arg of currentQuestion.arguments">
+
+    <hr style="margin:0px; border-top: 1px solid #ddd;" />
+    <div class="row" style="padding:5px">
+        <div class="col-md-4">
+            <input type="checkbox" class="form-control" style="display:inline; width:20px; height:20px" (change)="changeArg($event.target.checked, arg.id, arg.questionID)"
+            />
+            <div style="display:inline; vertical-align:super"> {{arg.text}} </div>
+        </div>
+        <div class="col-md-6" *ngIf="arg.variable">
+            <span> {{arg.maxMistakeText}} </span>
+            <input type="range" min="arg.maxMistakeWeight" max="arg.minMistakeWeight" />
+            <span class="pull-right"> {{arg.minMistakeText}} </span></div>
+    </div>
+</div>
+
+<div class="container panel" *ngFor="let question of currentQuestion.childs">
+    <div class="panel-heading">
+        <h4>{{question.text}}</h4>
+    </div>
+    <div class="panel-body">
+        <div class="row" style="margin-bottom: 10px; font-weight: bold">
+            <div class="col-md-4">Justification</div>
+            <div class="col-md-6">Censor defined severity</div>
+        </div>
+        <hr style="margin:0px; border-top: 1px solid #ddd;" />
+
+        <div *ngFor="let q of question">
+
+        </div>
+    </div>
+    
+</div>  

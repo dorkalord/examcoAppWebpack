@@ -1,0 +1,75 @@
+<div class="panel">
+    <div class="panel-heading ">
+        <h2>Evaluators for exam {{currentExam.id}} </h2>
+    </div>
+    <div class="panel-body ">
+        <div class="container panel" style="background-color: lavender ">
+            <div class="panel-heading ">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input #query type="text" class="form-control" (keyup.enter)="update(query.value)" (blur)="update(query.value)">
+                </div>
+            </div>
+            <div class="panel-body ">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th class="pull-right">Options</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let user of users; let i = index; ">
+                            <td> {{user.username}} </td>
+                            <td> {{user.name}} </td>
+                            <td class="pull-right">
+                                <button type="button" class="form-control" class="btn btn-success " (click)="addEvaluator(i)">
+                            Add
+                        </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="container ">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th class="pull-right">Options</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let user of evaluators; let i = index; ">
+                        <td> {{user.username}} </td>
+                        <td> {{user.name}} </td>
+                        <td class="pull-right">
+                            <button type="button" class="form-control" class="btn btn-danger " (click)="removeEvaluator(i)">
+                            Remove
+                        </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group pull-right margin-20">
+            <button class="btn btn-success">Save</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="container">
+    <pre>Exam value: <br>{{currentExam | json}}</pre>
+</div>

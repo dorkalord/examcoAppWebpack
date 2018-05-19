@@ -1,0 +1,57 @@
+<div class="container panel" *ngIf="state==2 || state==1">
+    <div class="panel-heading">
+        <h2>New criterea</h2>
+    </div>
+    <div class="panel body">
+        <criterea-form [form]="critereaForm"></criterea-form>
+
+        <div class="btn-group pull-right" role="group">
+            <button type="button" class="btn btn-success" (click)="save()">
+                Save
+            </button>
+            <button type="button" class="btn btn-primary" (click)="cancel()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let criterea of critereaList; let i=index">
+                <td>{{criterea.name}} </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" (click)="edit(criterea.id)">
+                            Edit
+                        </button>
+                        <!--<button type="button" class="btn btn-danger" (click)="remove(criterea.id)">
+                            Remove
+                        </button>-->
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="clearfix"></div>
+<div class="btn-group pull-right" role="group">
+    <button type="button" class="btn btn-success" (click)="add()">
+        Add criterea
+    </button>
+</div>
+
+<div class="clearfix"></div>
+<div class="margin-20">
+    <div>Form</div>
+    <pre>form value: <br>{{critereaForm.value | json}}</pre>
+    <pre>form value: <br>{{state | json}}</pre>
+</div>

@@ -1,0 +1,90 @@
+<div class="jumobtron" style="opacity:    0.5; 
+  width:      100%;
+  height:     100%; 
+  z-index:    10;
+  top:        0; 
+  left:       0; 
+  position:   fixed; 
+      -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;" *ngIf="loading" >
+  <h1>Loading...</h1>
+</div>
+
+<table class="table table-hover" *ngIf="examlist.length>=1">
+    <thead>
+        <tr>
+            <th> Course </th>
+            <th> Date </th>
+            <th> Status </th>
+            <th> Options </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let examy of examlist">
+            <td>{{examy.course.code}} - {{examy.course.name}} </td>
+            <td>{{examy.date | date:"dd.MM.yyyy"}}</td>
+            <td>{{examy.status}} </td>
+            <td>
+                <div class="btn-group" role="group">
+                    <span *ngIf="examy.stateID==1" class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" (click)="edit(examy.id)">Edit</button>
+                        <button type="button" class="btn btn-default" (click)="chanegeState(examy.id,2)">Begin censorship</button>
+                    </span>
+                    <span *ngIf="examy.stateID==2" class="btn-group" role="group">
+                        <!--<button type="button" class="btn btn-primary" (click)="censor(examy.id)">Censor</button>-->
+                        <button type="button" class="btn btn-default" (click)="chanegeState(examy.id,3)">Begin Grading</button>
+                    </span>
+                    <span *ngIf="examy.stateID==3" class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" (click)="grade(examy.id)">Grade</button>
+                        <button type="button" class="btn btn-info" (click)="generateReports(examy.id)">Generate reports</button>
+                        <button type="button" class="btn btn-danger" (click)="chanegeState(examy.id,1)">Close exam</button>
+                    </span>
+                    <span *ngIf="examy.stateID>=3" class="btn-group" role="group">
+                        <button type="button" class="btn btn-success" (click)="exportCensorship(examy.id)">Export censorships</button>
+                    </span>
+                    <span class="btn-group" role="group">
+                        <button type="button" class="btn btn-success" (click)="export(examy.id)">Export exam</button>
+                    </span>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div *ngIf="censorExams.length>0">
+    <h2> Exams to censor </h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th> Course </th>
+                <th> Date </th>
+                <th> Status </th>
+                <th> Options </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let examy of censorExams">
+                <td>{{examy.course.code}} - {{examy.course.name}} </td>
+                <td>{{examy.date | date:"dd.MM.yyyy"}}</td>
+                <td>{{examy.status}} </td>
+                <td>
+                    <div class="btn-group" role="group">
+
+                        <button type="button" class="btn btn-primary" (click)="censor(examy.id)">Censor</button>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="clearfix"></div>
+<div class="margin-20">
+    <div>Raw data</div>
+    <pre>Is myForm valid?: <br>{{examlist | json}}</pre>
+    <pre>Is myForm valid?: <br>{{currentUser | json}}</pre>
+</div>

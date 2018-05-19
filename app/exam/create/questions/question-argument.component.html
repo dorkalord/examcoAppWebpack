@@ -1,0 +1,133 @@
+<div class="panel-heading">
+    <h3>Arguments</h3>
+</div>
+
+<div class="panel-body">
+    <form [formGroup]="argumentForm" novalidate>
+
+        <div class="form-group">
+            <label>Argument</label>
+            <input type="text" class="form-control" formControlName="text">
+        </div>
+
+        <!--<div class="form-group">
+            <label>Parent argument</label>
+            <select formControlName="parentArgumentID" class="form-control">
+                <option *ngFor="let item of arguments.value" [value]="item.id" >{{ item.text }}</option>
+            </select>
+        </div>-->
+
+        <div class="form-group">
+            <label>Points to be deducted for mistake</label>
+            <input type="number" min="-100" max="0" class="form-control" 
+            formControlName="defaultWeight" (change)="changedDefaultWeight($event)">
+        </div>
+
+        <div class="form-group">
+            <label>Advice</label>
+            <input type="text" class="form-control" formControlName="advice">
+        </div>
+
+        <div class="form-group panel-body" style="background-color:beige">
+            <label><input type="checkbox" formControlName="variable" > Censor defined severity </label>
+
+            <div *ngIf="argumentForm.value.variable">
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Most wrong text</label>
+
+                        <input type="text" class="form-control" formControlName="maxMistakeText">
+                    </div>
+                    <div class="col-md-5">
+                        <label>Almost correct text</label>
+
+                        <input type="text" class="form-control" formControlName="minMistakeText">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Maximum deduction in worst case</label>
+                        <input type="number" class="form-control" formControlName="maxMistakeWeight">
+                    </div>
+                    <div class="col-md-5">
+                        <label>Minimum deduction in best case</label>
+                        <input type="number" class="form-control" formControlName="minMistakeWeight">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Genereal criterea</th>
+                        <th>Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let criterea of currentExam.examCriterea; let i=index">
+                        <td>{{criterea.name}} </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" value="0" min="-100" max="0" class="form-control" [(ngModel)]="argumentForm.value.argumentCritereas[i].severity"
+                                    [ngModelOptions]="{standalone: true}" (change)="updateCriterea($event.target.value, criterea.id)">
+                                <small *ngIf="argumentForm.value.argumentCritereas[i].severity>0" class="text-danger">
+                                    Must be negative number
+                                    </small>
+                                <!--<input #box type="number" value="0" min="0" max="100" class="form-control" 
+                                (blur)="updateCriterea(box.value, criterea.id)">-->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group pull-right" role="group">
+            <button type="button" class="form-control" class="btn btn-success" (click)="save(argumentForm.value.id)">
+                Save
+            </button>
+            <button type="button" class="form-control" class="btn btn-danger" (click)="cancel()">
+                Cancel 
+            </button>
+
+        </div>
+    </form>
+
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Argument</th>
+                    <th>Impact</th>
+                    <th class="pull-right">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let argument of arguments.value; let i=index">
+                    <td>{{argument.text}} </td>
+                    <td>{{argument.defaultWeight}} </td>
+                    <td>
+                        <div class="btn-group pull-right" role="group">
+                            <button type="button" class="form-control" class="btn btn-primary " (click)="edit(i)">
+                            Edit
+                        </button>
+                            <button type="button" class="form-control" class="btn btn-danger " *ngIf="arguments.value.length > 1" (click)="removeArgument(i)">
+                            Remove 
+                        </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="margin-20">
+        <pre>form value: <br>{{argumentForm.value | json}}</pre>
+        <pre>data value: <br>{{arguments.value | json}}</pre>
+    </div><!---->
+
+</div>

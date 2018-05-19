@@ -1,0 +1,179 @@
+<h1>
+	Grade exam: {{currentExam.course.code}} {{currentExam.date | date:'dd.mm.yyyy'}}</h1>
+<div class="container panel">
+	<div class="row">
+		<div class="col-md-6">
+			<div style="display: block">
+				<canvas baseChart [(datasets)]="gradeChart.chartData" [labels]="gradeChart.chartLabels" [options]="gradeChart.chartOptions"
+				 [legend]="gradeChart.chartLegend" [chartType]="gradeChart.chartType">
+				</canvas>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div style="display: block">
+				<canvas baseChart [datasets]="gradesByQuestionChart.chartData" [labels]="gradesByQuestionChart.chartLabels" [options]="gradesByQuestionChart.chartOptions"
+				 [legend]="gradesByQuestionChart.chartLegend" [chartType]="gradesByQuestionChart.chartType">
+				</canvas>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+
+
+		<div class="col-md-6">
+			<div style="display: block">
+				<canvas baseChart [datasets]="problemsByQuestionChart.chartData" [labels]="problemsByQuestionChart.chartLabels" [options]="problemsByQuestionChart.chartOptions"
+				 [legend]="problemsByQuestionChart.chartLegend" [chartType]="problemsByQuestionChart.chartType">
+				</canvas>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div style="display: block">
+			<canvas baseChart [datasets]="mistakesByQuestionChart.chartData" [labels]="mistakesByQuestionChart.chartLabels" [options]="mistakesByQuestionChart.chartOptions"
+			 [legend]="mistakesByQuestionChart.chartLegend" [chartType]="mistakesByQuestionChart.chartType">
+			</canvas>
+		</div>
+	</div>
+
+</div>
+
+<div class="container panel">
+	<h2>Qestion weights</h2>
+	<table class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<th>Q#</th>
+				<th>Question</th>
+				<th>Proposed weight</th>
+				<th>Final weight</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let qestion of currentExam.questions; let i=index">
+				<td>Q{{i}}</td>
+				<td>{{qestion.text}} </td>
+				<td>{{qestion.proposedWeight}} </td>
+				<td>
+					<div class="form-group">
+						<input type="number" value="0" min="0" max="100" class="form-control" [(ngModel)]="currentExam.questions[i].finalWeight"
+						 [ngModelOptions]="{standalone: true}" (change)="calculateTotals()">
+						<!--(change)="updateCriterea($event.target.value, criterea.id)">-->
+						<small *ngIf="currentExam.questions[i].finalWeight<0" class="text-danger">
+							Must be a positive number
+						</small>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>{{sumProposedQuestionWeights}}</td>
+				<td>{{sumFinalQuestionWeights}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="pull-right" role="group">
+		<button type="button" class="form-control" class="btn btn-primary" (click)="calculateFinal()">
+			Calculate
+		</button>
+		<button type="button" class="form-control" class="btn btn-info" (click)="calculateProposed()">
+			Optimise
+		</button>
+
+	</div>
+
+</div>
+
+<div class="container panel">
+	<h2>Exam criteriea</h2>
+
+	<div>
+		<div class="container panel" style="background-color: lavender " *ngIf="showIndepth">
+
+			<div class="row">
+				<div style="display: block">
+					<canvas baseChart [datasets]="dimensionChart.chartData" [labels]="dimensionChart.chartLabels" [options]="dimensionChart.chartOptions"
+					 [legend]="dimensionChart.chartLegend" [chartType]="dimensionChart.chartType">
+					</canvas>
+				</div>
+			</div>
+
+			<div class="container panel">
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th class="col-xs-1">Grade</th>
+							<th class="col-xs-6">Advice</th>
+							<th class="col-xs-2">Max</th>
+							<th class="col-xs-2">Min</th>
+							<th class="col-xs-1">Number</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let advice of currentCriteria.advices; let i=index">
+							<td>{{advice.grade}}</td>
+							<td>
+								<textarea type="text" class="form-control" [(ngModel)]="advice.text" [ngModelOptions]="{standalone: true}"></textarea>
+							</td>
+							<td>
+								<input type="number" value="0" max="0" class="form-control" [(ngModel)]="advice.max" [ngModelOptions]="{standalone: true}"
+								 (change)="calculateCriteraPoints(currentCriteria.id)">
+							</td>
+							<td>
+								<input type="number" value="0" max="0" class="form-control" [(ngModel)]="advice.min" [ngModelOptions]="{standalone: true}"
+								 (change)="calculateCriteraPoints(currentCriteria.id)">
+							</td>
+							<td>{{advice.id}}</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+			<div class="pull-right" role="group">
+				<button type="button" class="form-control" class="btn btn-primary" (click)="calculateCriteraPoints()">
+					Calculate
+				</button>
+				<button type="button" class="form-control" class="btn btn-danger" (click)="cancelCriteriaEdit()">
+					Cancel
+				</button>
+
+				<button type="button" class="form-control" class="btn btn-success" (click)="calculateCriteraPoints()">
+					Save dimension
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<table class="table table-hover table-striped">
+		<thead>
+			<tr>
+				<th>Dimension</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let crit of currentExam.examCriterea; let i=index">
+				<td>{{crit.name}} </td>
+				<td>
+					<div class="form-group">
+						<button type="button" class="form-control" class="btn btn-primary" (click)="analyseDimension(i)">
+							Analyse
+						</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="pull-right" role="group">
+		<button type="button" class="form-control" class="btn btn-success" (click)="saveFinal()">
+			Save all
+		</button>
+	</div>
+
+</div>
+
+<div class="margin-20">
+	<pre>form value: <br>{{currentExam | json}}</pre>
+</div>

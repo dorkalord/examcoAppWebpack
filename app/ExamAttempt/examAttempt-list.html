@@ -1,0 +1,82 @@
+<div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Date of censorship</th>
+                <th>Total</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let attempt of examAttemptList ">
+                <td>{{attempt.studentID}}</td>
+                <td>{{attempt.censorshipDate | date:"dd.MM.yyyy H:mm" }}</td>
+                <td>{{attempt.total}}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary" (click)="edit(attempt.id)">
+                            Edit
+                        </button>
+                        <button type="button" class="form-control" class="btn btn-danger" (click)="remove(attempt.id)">
+                             Remove 
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectModal">
+            Select student to censor
+        </button>
+    </div>
+</div>
+
+<div class="modal fade modal-xl" id="selectModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" #selectModal>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h2>Select student</h2>
+                    <div class="form-group">
+                        <label>Search</label>
+                        <input #query type="text" class="form-control" (keyup.enter)="update(query.value)" (blur)="update(query.value)">
+                    </div>
+                </div>
+                <form name="form" #f="ngForm" novalidate autocomplete="false">
+                    <div class="modal-body">
+                        <table class="table table-hover table-responsive" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let user of users; let i = index; ">
+                                    <td> {{user.username}} </td>
+                                    <td> {{user.email}} </td>
+                                    <td> {{user.id}}
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-primary" (click)="create(user.id)">
+                                                Censor
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="margin-20">
+    <div>Raw data</div>
+    <pre>User value: <br>{{courseList | json}}</pre>
+</div>

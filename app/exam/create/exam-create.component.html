@@ -1,0 +1,149 @@
+<div class="container panel">
+    <h2>Create new exam</h2>
+    <form [formGroup]="examForm" novalidate>
+        <!--(ngSubmit)="save(examForm)"-->
+
+        <div class="form-group">
+            <label>State</label>
+            <input type="text" class="form-control" formControlName="status" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Course code</label>
+            <select formControlName="courseID" class="form-control">
+                <option *ngFor="let item of courses" [value]="item.id" >{{ item.code }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Date</label>
+            <input type="datetime-local" class="form-control" formControlName="date">
+        </div>
+
+        <div class="form-group">
+            <label>Langugage</label>
+            <input type="text" class="form-control" formControlName="language">
+        </div>
+
+        <div class="container panel" *ngIf="state==2 || state==1">
+            <div class="panel-heading">
+                <h2>New criterea</h2>
+            </div>
+            <div class="panel body">
+                <criterea-form [form]="critereaForm"></criterea-form>
+
+                <div class="btn-group pull-right" role="group">
+                    <button type="button" class="btn btn-success" (click)="save()">
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>General criterea</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let criterea of examForm.value.examCriterea; let i=index">
+                        <td>{{criterea.name}} </td>
+                        <td>
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" class="btn btn-primary" (click)="edit(i)">
+                                Edit
+                            </button>
+                                <button type="button" class="btn btn-danger" (click)="removeCriterea(i)">
+                                Remove
+                            </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="btn-group pull-right" role="group">
+            <button type="button" class="btn btn" data-toggle="modal" data-target="#myModal" (click)="loadCriterea()">
+                    Add existing
+                </button>
+            <button type="button" class="btn btn-success" (click)="addExamCriterea()">
+                    Add criterea
+                </button>
+        </div>
+
+        <div class="clearfix margin-20"></div>
+    </form>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">Existing criterea</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="panel-heading ">
+                        <div class="form-group">
+                            <label>Search</label>
+                            <input #query type="text" class="form-control" (keyup.enter)="searchCriterea(query.value)" (blur)="searchCriterea(query.value)">
+                        </div>
+                    </div>
+                    <div class="panel-body ">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let user of generealCritereaListed; let i = index; ">
+                                    <td> {{user.name}} </td>
+                                    <td>
+                                        <button type="button" class="form-control" class="btn btn-success " (click)="addCriterea(i)">
+                                            Add
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="form-group pull-right">
+    <button class="btn btn-primary" (click)="next()" >Next</button>
+    <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+    />
+    <a [routerLink]="['/exam']" class="btn btn-link">Cancel</a>
+</div>
+
+<div class="clearfix"></div>
+<div class="margin-20">
+    <div>Raw data</div>
+    <pre>Is myForm valid?: <br>{{examForm.valid | json}}</pre>
+    <pre>form value: <br>{{examForm.value | json}}</pre>
+    <pre>User value: <br>{{currentUser | json}}</pre>
+</div>
