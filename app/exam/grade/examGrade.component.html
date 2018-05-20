@@ -85,7 +85,7 @@
 
 	<div>
 		<div class="container panel" style="background-color: lavender " *ngIf="showIndepth">
-
+			<h3>Criterea: {{currentCriteria.name}}</h3>
 			<div class="row">
 				<div style="display: block">
 					<canvas baseChart [datasets]="dimensionChart.chartData" [labels]="dimensionChart.chartLabels" [options]="dimensionChart.chartOptions"
@@ -161,7 +161,7 @@
 			</tr>
 		</tbody>
 	</table>
-	
+
 
 </div>
 

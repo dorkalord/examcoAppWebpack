@@ -185,8 +185,8 @@ export class ExamGradeComponent implements OnInit {
 
 			attempt.anwsers.forEach(anwser => {
 				let question: Question2 = this.currentExam.questions[this.currentExam.questions.findIndex(x => x.id == anwser.questionID)];
-				ocena += anwser.total * question.proposedWeight / 100;
-				max += question.proposedWeight / 100;
+				ocena += anwser.total * question.proposedWeight / this.sumProposedQuestionWeights;
+				max += question.proposedWeight / this.sumProposedQuestionWeights;
 			});
 
 			let i: number = 10 - (ocena / max / 10);
@@ -224,8 +224,8 @@ export class ExamGradeComponent implements OnInit {
 
 			attempt.anwsers.forEach(anwser => {
 				let question: Question2 = this.currentExam.questions[this.currentExam.questions.findIndex(x => x.id == anwser.questionID)];
-				ocena = anwser.total * question.proposedWeight / 100;
-				max = question.proposedWeight / 100;
+				ocena = anwser.total * question.proposedWeight / this.sumProposedQuestionWeights;
+				max = question.proposedWeight / this.sumProposedQuestionWeights;
 
 				let i: number = 10 - (ocena / max / 10);
 				i = (i < 5) ? i : 5;
@@ -325,13 +325,17 @@ export class ExamGradeComponent implements OnInit {
 
 			attempt.anwsers.forEach(anwser => {
 				let question: Question2 = this.currentExam.questions[this.currentExam.questions.findIndex(x => x.id == anwser.questionID)];
-				ocena += anwser.total * question.finalWeight / 100;
-				max += question.finalWeight / 100;
+				ocena += anwser.total * question.finalWeight / this.sumFinalQuestionWeights;
+				max += question.finalWeight / this.sumFinalQuestionWeights;
 			});
 
 			let i: number = 10 - (ocena / max / 10);
+			console.log("ocene");
+			console.log(ocena);
 			ocene[Math.floor(i)] += 1;
 		});
+
+
 		//copying the results
 		for (let i = 0; i < 9; i++) {
 			this.gradeChart.chartData[1].data[i] = ocene[i];
@@ -364,8 +368,8 @@ export class ExamGradeComponent implements OnInit {
 
 			attempt.anwsers.forEach(anwser => {
 				let question: Question2 = this.currentExam.questions[this.currentExam.questions.findIndex(x => x.id == anwser.questionID)];
-				ocena = anwser.total * question.finalWeight / 100;
-				max = question.finalWeight / 100;
+				ocena = anwser.total * question.finalWeight / this.sumFinalQuestionWeights;
+				max = question.finalWeight / this.sumFinalQuestionWeights;
 
 				let i: number = 10 - (ocena / max / 10);
 				i = (i < 5) ? i : 5;
@@ -479,10 +483,10 @@ export class ExamGradeComponent implements OnInit {
 	}
 
 	analyseDimension(index: number) {
-		this.showIndepth = true;
 		this.currentCriteria = this.currentExam.examCriterea[index];
 
 		this.calculateStudentCritereaGrades(this.currentCriteria.id);
+		this.showIndepth = true;
 	}
 
 	resetCriteriaEdit() {
