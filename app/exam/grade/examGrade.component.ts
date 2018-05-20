@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 
 import { User, Exam, ExamFull, Question, Question2 } from '../../_models/index';
 import { UserService } from '../../_services/index';
@@ -106,44 +106,45 @@ export class ExamGradeComponent implements OnInit {
 		chartData: []
 	};
 
+	public sliderCfg: any;
+	public sliderData: number[];
+
 	public currentExam: ExamFull;
 	public sumProposedQuestionWeights: number = 0;
 	public sumFinalQuestionWeights: number = 0;
 
 	constructor(private userService: UserService,
-		private examGradeDTS: ExamGradeDataTransferService) {
+		private examGradeDTS: ExamGradeDataTransferService,
+		private elRef: ElementRef) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		//this.currentExam.examCriterea[i].advices
 		this.currentExam = this.examGradeDTS.currentExam;
 		this.currentCriteria = this.currentExam.examCriterea[0];
 		this.gradeChart.chartLabels = [];
 		this.gradeChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.gradesByQuestionChart.chartLabels = [];
-		this.gradesByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.mistakesByQuestionChart.chartLabels = [];
-		this.mistakesByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.problemsByQuestionChart.chartLabels = [];
-		this.problemsByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.dimensionChart.chartLabels = [];
-		this.dimensionChart.chartData = [{ data: [], label: 'Number of achivers' }];
+
+		this.sliderData = [0];
+		this.sliderCfg = {
+			behaviour: 'tap',
+			connect: false,
+			step: 1,
+			margin: 1,
+			tooltips: true,
+			range: {
+				min: 0,
+				max: 20
+			},
+			direction: 'rtl',
+			pips: {
+				mode: 'steps',
+				density: 2,
+				values: 10,
+				stepped: true
+			}
+		};
 	}
 
 	ngOnInit() {
-		this.currentExam = this.examGradeDTS.currentExam;
-		this.currentCriteria = this.currentExam.examCriterea[0];
-
-		this.currentExam = this.examGradeDTS.currentExam;
-		this.currentCriteria = this.currentExam.examCriterea[0];
-		this.gradeChart.chartLabels = [];
-		this.gradeChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.gradesByQuestionChart.chartLabels = [];
-		this.gradesByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.mistakesByQuestionChart.chartLabels = [];
-		this.mistakesByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.problemsByQuestionChart.chartLabels = [];
-		this.problemsByQuestionChart.chartData = [{ data: [], label: 'Number of achivers' }];
-		this.dimensionChart.chartLabels = [];
-		this.dimensionChart.chartData = [{ data: [], label: 'Number of achivers' }];
 
 		this.gradeChart.chartLabels = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 		this.gradeChart.chartData = [
@@ -152,25 +153,22 @@ export class ExamGradeComponent implements OnInit {
 		];
 
 		this.calculateProposed();
-		this.calculateCriteraPoints(this.currentCriteria.id);
-	}
 
-	saveFinal() {
-		let examTotal: number = 0;
-
-		this.currentExam.questions.forEach(x => examTotal += x.finalWeight);
-
-		this.examGradeDTS.examAttempts.forEach(attempt => {
-			attempt.finalTotal = 0;
-			attempt.anwsers.forEach(anws => {
-				anws.finalTotal = anws.total * this.currentExam.questions.find(x => x.id == anws.questionID).finalWeight / examTotal;
-				attempt.finalTotal += anws.finalTotal;
-			});
+		this.currentExam.examCriterea.forEach(element => {
+			this.calculateCriteraPoints(element.id);
 		});
-
-		this.calculateFinal();
-		//need to push
 	}
+
+	color() {
+		let classes = ['c-1-color', 'c-2-color', 'c-3-color', 'c-4-color', 'c-5-color', 'c-6-color'];
+
+		var connect = this.elRef.nativeElement.querySelectorAll('.noUi-connect');
+		for (var i = 0; i < connect.length; i++) {
+			connect[i].classList.add(classes[i]);
+		}
+
+	}
+
 
 	calculateProposed() {
 		//grades distribution
@@ -230,8 +228,7 @@ export class ExamGradeComponent implements OnInit {
 				max = question.proposedWeight / 100;
 
 				let i: number = 10 - (ocena / max / 10);
-				i = (i < 5) ? i: 5;
-				console.log(anwser);
+				i = (i < 5) ? i : 5;
 				qd1[Math.floor(i)].data[qi]++;
 				qi++;
 
@@ -266,7 +263,7 @@ export class ExamGradeComponent implements OnInit {
 					attempt.generalCritereaImpacts.filter(x => x.mistakeID == mis.id && x.weight != 0).forEach(miscrit => {
 						let n = this.currentExam.examCriterea.findIndex(c => c.id == miscrit.examCritereaID);
 						let m = this.currentExam.questions.findIndex(q => q.id == anw.questionID);
-						qd[n].data[m] += (miscrit.weight / this.examGradeDTS.examAttempts.length);
+						qd[n].data[m] += miscrit.weight // this.examGradeDTS.examAttempts.length);
 					});
 				});
 			});
@@ -277,15 +274,16 @@ export class ExamGradeComponent implements OnInit {
 
 		//calculation of mistakes in a question
 		qd = [];
+		let argids: number[] = [];
 
 		this.currentExam.questions.forEach(quest => {
 
 			quest.arguments.forEach(arg => {
 				qd.push({ label: "", data: [] });
-
+				argids.push(arg.id);
 				qd[qd.length - 1].label = arg.text;
 
-				for (let i = 0; i < questionLabels.length; i++) {
+				for (let i = 0; i < this.currentExam.questions.length; i++) {
 					qd[qd.length - 1].data.push(0);
 				}
 			})
@@ -297,11 +295,17 @@ export class ExamGradeComponent implements OnInit {
 			attempt.anwsers.forEach(anw => { //for each anwser check the mistakes and their impact on the grade
 				anw.mistakes.forEach(mis => {
 					let m = this.currentExam.questions.findIndex(q => q.id == anw.questionID);
-					let n = this.currentExam.questions[m].arguments.findIndex(x => x.id == mis.argumentID);
+					let n = argids.findIndex(x => x == mis.argumentID);
+
+					//console.log("Question :" +  this.currentExam.questions.find(q => q.id == anw.questionID).text);
+					//console.log("argument :" + this.currentExam.questions[m].arguments.find(x => x.id == mis.argumentID).text)
+
 					qd[n].data[m]++;
 				});
 			});
 		});
+
+		qd = qd.filter(x => x.data.reduce((a, b) => a + b) > 0);
 
 		this.mistakesByQuestionChart.chartLabels = questionLabels;
 		this.mistakesByQuestionChart.chartData = qd;
@@ -364,8 +368,8 @@ export class ExamGradeComponent implements OnInit {
 				max = question.finalWeight / 100;
 
 				let i: number = 10 - (ocena / max / 10);
-				i = (i < 5) ? i: 5;
-				console.log("i " + i);
+				i = (i < 5) ? i : 5;
+
 				qd1[Math.floor(i)].data[qi]++;
 				qi++;
 
@@ -381,12 +385,13 @@ export class ExamGradeComponent implements OnInit {
 		this.sumFinalQuestionWeights = this.currentExam.questions.reduce((a, b) => a + b.finalWeight, 0);
 	}
 
-	calculateCriteraPoints(critereaID: number = 1) {
+	calculateCriteraPoints(critereaID: number) {
 		let points: number[] = [];
 		let critereaIndex: number = this.currentExam.examCriterea.findIndex(x => x.id == critereaID);
 		this.dimensionChart.chartLabels = [];
 		this.dimensionChart.chartData = [{ data: [], label: 'Number of achivers' }];
 
+		//summarises the general criteria impacts for each attempt
 		this.examGradeDTS.examAttempts.forEach(attempt => {
 			points.push(
 				attempt.generalCritereaImpacts.
@@ -394,35 +399,122 @@ export class ExamGradeComponent implements OnInit {
 					reduce((a, b) => a + b.weight, 0));
 		});
 
+		//finds the minimum and maximum and calculates how it should strech throug the grades
 		let min: number = points.reduce((min, p) => p < min ? p : min, points[0]);
 		let max: number = points.reduce((max, p) => p > max ? p : max, points[0]);
-		let delta: number = max - min / points.length;
+		let delta: number = (max - min + 1) / 6;
 
+		this.sliderCfg.range.min = min - 1;
+		this.sliderCfg.range.max = max;
 		console.log("points");
 		console.log(points);
 
 		console.log("min: " + min + "  max: " + max);
 
+		//sets the range for each grade
+
 		this.currentExam.examCriterea[critereaIndex].advices.forEach((element, index) => {
 			this.dimensionChart.chartLabels.push(element.grade);
-			this.dimensionChart.chartData[0].data.push(Math.ceil(Math.random() * 10));
-
-			element.max = 0;
-			element.min = 0;
 
 			element.max = Math.round(max - delta * index);
 			element.min = Math.round(max - delta * (index + 1));
+
+		});
+
+		this.calculateStudentCritereaGrades(critereaID);
+	}
+
+	calculateStudentCritereaGrades(critereaID: number) {
+		this.dimensionChart.chartData = [{ data: [], label: 'Number of achivers' }];
+		let critereaIndex: number = this.currentExam.examCriterea.findIndex(x => x.id == critereaID);
+		this.checkCriteraAdviceOverlap();
+
+		let points: number[] = [];
+
+		//summarises the general criteria impacts for each attempt
+		this.examGradeDTS.examAttempts.forEach(attempt => {
+			points.push(
+				attempt.generalCritereaImpacts.
+					filter(x => x.examCritereaID == critereaID).
+					reduce((a, b) => a + b.weight, 0));
 		});
 
 
+		this.currentExam.examCriterea[critereaIndex].advices.forEach((element, index) => {
+			this.dimensionChart.chartData[0].data.push(
+				points.filter(x => element.min < x && x <= element.max).length);
+
+
+			/*console.log("points " + element.grade);
+			console.log("min: " + element.min + "  max: " + element.max);
+			console.log(points.filter(x => element.min < x && x <= element.max));
+			console.log(points.filter(x => element.min < x && x <= element.max).length);*/
+
+		});
+
+		this.sliderData = [];
+		this.sliderCfg.connect = [];
+		this.sliderCfg.connect.push(true);
+		for (let i = this.currentExam.examCriterea[critereaIndex].advices.length - 1; i >= 0; i--) {
+			const element = this.currentExam.examCriterea[critereaIndex].advices[i];
+			this.sliderData.push(element.min);
+
+			this.sliderCfg.connect.push(true);
+		}
+		this.color();
+	}
+
+	checkCriteraAdviceOverlap() {
+		for (let i = 0; i < this.currentCriteria.advices.length; i++) {
+			if (this.currentCriteria.advices[i].max <= this.currentCriteria.advices[i].min) {
+				this.currentCriteria.advices[i].min = this.currentCriteria.advices[i].max - 1;
+			}
+			if (i + 1 < this.currentCriteria.advices.length) {
+				if (this.currentCriteria.advices[i].min <= this.currentCriteria.advices[i + 1].max) {
+					this.currentCriteria.advices[i + 1].max = this.currentCriteria.advices[i].min;
+				}
+			}
+
+		}
 	}
 
 	analyseDimension(index: number) {
 		this.showIndepth = true;
 		this.currentCriteria = this.currentExam.examCriterea[index];
+
+		this.calculateStudentCritereaGrades(this.currentCriteria.id);
 	}
 
-	cancelCriteriaEdit() {
+	resetCriteriaEdit() {
+		this.calculateCriteraPoints(this.currentCriteria.id)
+	}
+
+	closeCriteria() {
 		this.showIndepth = false;
+	}
+
+	sliderChange() {
+
+	}
+
+	calculateOptimal() {
+		alert("Optimisation is waiting");
+	}
+
+	saveFinal() {
+		let examTotal: number = 0;
+
+		this.currentExam.questions.forEach(x => examTotal += x.finalWeight);
+
+		this.examGradeDTS.examAttempts.forEach(attempt => {
+			attempt.finalTotal = 0;
+			attempt.anwsers.forEach(anws => {
+				anws.finalTotal = anws.total * this.currentExam.questions.find(x => x.id == anws.questionID).finalWeight / examTotal;
+				attempt.finalTotal += anws.finalTotal;
+			});
+		});
+
+		this.calculateFinal();
+		//need to push
 	}
 }

@@ -46,6 +46,7 @@ import { ChartsModule } from 'ng2-charts';
 import { ExamGradeComponent } from './exam/grade/examGrade.component';
 import { ExamGradeDataTransferService } from './_services/examGrade-datatransfer.service';
 import { ExamReportComponent } from './exam/report/examReport.component';
+import { NouisliderModule } from 'ng2-nouislider';
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { ExamReportComponent } from './exam/report/examReport.component';
         ReactiveFormsModule,
         HttpModule,
         ChartsModule,
-        routing
+        routing,
+        NouisliderModule 
     ],
     declarations: [
         AppComponent,
