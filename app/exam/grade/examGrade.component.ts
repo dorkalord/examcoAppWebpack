@@ -319,7 +319,7 @@ export class ExamGradeComponent implements OnInit {
 		for (let i = 0; i < 10; i++) {
 			ocene.push(0);
 		}
-
+		console.log("ocene");
 		this.examGradeDTS.examAttempts.forEach(attempt => {
 			let ocena: number = 0.0;
 			let max: number = 0.0;
@@ -331,7 +331,7 @@ export class ExamGradeComponent implements OnInit {
 			});
 
 			let i: number = 10 - (ocena / max / 10);
-			console.log("ocene");
+			
 			console.log(ocena);
 			ocene[Math.floor(i)] += 1;
 		});

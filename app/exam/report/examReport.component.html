@@ -11,7 +11,8 @@
 
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
 		<h3>Q{{i+1}} {{anws.question.text}}</h3>
-		<p>Points: {{ anws.total - anws.adjustment}} + {{anws.adjustment}} = {{anws.total}} out of {{anws.question.max}} => {{anws.finalTotal
+		<p>points: {{ anws.total - anws.adjustment}} + adjustment: {{anws.adjustment}} = {{anws.total}} 
+			* ( qestion weight: {{anws.question.finalWeight}} /  qestion weight total: {{anws.question.max}} ) = exam percentage: {{anws.finalTotal
 			| number : '1.2-2'}} % </p>
 		<p>Note: {{anws.note}} </p>
 
