@@ -11,8 +11,8 @@
 
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
 		<h3>Q{{i+1}} {{anws.question.text}}</h3>
-		<p>Points: {{ anws.total - anws.adjustment}} + {{anws.adjustment}} = {{anws.total}} 
-			out of {{anws.question.max}} => {{anws.finalTotal | number : '1.2-2'}} % </p>
+		<p>Points: {{ anws.total - anws.adjustment}} + {{anws.adjustment}} = {{anws.total}} out of {{anws.question.max}} => {{anws.finalTotal
+			| number : '1.2-2'}} % </p>
 		<p>Note: {{anws.note}} </p>
 
 		<table class="table table-hover table-striped">
@@ -53,7 +53,16 @@
 					<td> {{advice.advice.text}} </td>
 				</tr>
 			</tbody>
+
+			
 		</table>
+		<div class="container row">
+				<div style="display: block">
+					<canvas baseChart [(datasets)]="gradeChart.chartData" [labels]="gradeChart.chartLabels" [options]="gradeChart.chartOptions"
+					 [legend]="gradeChart.chartLegend" [chartType]="gradeChart.chartType">
+					</canvas>
+				</div>
+			</div>
 	</div>
 </div>
 
@@ -65,13 +74,12 @@
 		<li *ngFor="let attempt of examReportDTS.examAttempts; let i=index" [ngClass]="(currentAttemptIndex===i)?'active':''">
 			<a (click)="moveTo(i)">{{i+1}}</a>
 		</li>
-		<li [ngClass]="(currentAttemptIndex<examReportDTS.examAttempts.length-1)?'active':'disabled'" 
-		*ngIf="currentAttemptIndex<examReportDTS.examAttempts.length-1">
+		<li [ngClass]="(currentAttemptIndex<examReportDTS.examAttempts.length-1)?'active':'disabled'" *ngIf="currentAttemptIndex<examReportDTS.examAttempts.length-1">
 			<a (click)="moveTo(currentAttemptIndex+1)">Next</a>
 		</li>
 	</ul>
 </div>
 
 <div class="margin-20">
-	<pre>form value: <br>{{	currentAttempt | json}}</pre>
+	<pre>form value: <br>{{	allExamAdvices | json}}</pre>
 </div>
