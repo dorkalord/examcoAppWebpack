@@ -7,11 +7,3 @@
 
 
 </div>
-
-<div class="row" >
-    <nouislider #slider2  [config]="someRange2config" [tooltips]="tooltipdisplay" [min]="0" [max]="20" [step]="0.5" [(ngModel)]="podatki" (ngModelChange)="enter()"  ></nouislider>
-</div>   
-
-<div class="margin-20">
-	<pre>form value: <br>{{podatki | json}}</pre>
-</div>

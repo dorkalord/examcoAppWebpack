@@ -1,6 +1,6 @@
 import { Censor } from './censor';
 import { ArgumentCriterea, Question, Argument } from './question';
-import { Question2, ExamCriterea, ExamCriterea2 } from '.';
+import { Question2, ExamCriterea, ExamCriterea2, User } from '.';
 import { Advice } from './criterea';
 export class ExamAttempt {
     id: number;
@@ -97,6 +97,7 @@ export class ExamAttempt3 {
     examID: number;
     censorID: number;
     studentID: number;
+    student: User;
 
     anwsers: Anwser[];
     generalCritereaImpacts: GeneralCritereaImpact[];

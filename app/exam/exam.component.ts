@@ -118,7 +118,31 @@ export class ExamComponent implements OnInit {
                 this.examAttemptService.getByExam(examID).subscribe(data => {
                     this.ExamReportDTS.examAttempts = data;
 
-                    this.router.navigateByUrl('exam/report/' + examID );
+                    this.userService.getAll().subscribe(usrs => {
+                        let users:User[] = usrs;
+                        this.ExamReportDTS.examAttempts.forEach(attempt => {
+
+                            attempt.student = users.find(x=> x.id == attempt.studentID);
+
+                            attempt.anwsers.forEach(anws => {
+                                anws.question = this.ExamReportDTS.currentExam.questions.find(x=> x.id == anws.questionID);
+                
+                                anws.mistakes.forEach(mistake => {
+                                    mistake.argument = anws.question.arguments.find(x=> x.id == mistake.argumentID);
+                                });
+                            });
+                
+                            attempt.examAdvices.forEach(advice => {
+                                advice.examCriterea = this.ExamReportDTS.currentExam.examCriterea.find(x=> x.id == advice.examCritereaID);
+                                advice.advice = advice.examCriterea.advices.find(x=> x.id == advice.adviceID);
+                                
+                            });
+                        });
+
+                        this.router.navigateByUrl('exam/report/' + examID );
+                    } );
+
+                    
                 });
         });
     }

@@ -1,18 +1,18 @@
 <h1>Exam report: {{currentExam.course.code}} {{currentExam.date | date:'dd.mm.yyyy'}} </h1>
 
 <div class="container panel" style="background-color: lavender">
-	<h2>Student: {{this.currentAttempt.studentID}} </h2>
+	<h2>Student: {{this.currentAttempt.student.name}} </h2>
 
 	<p>
 		Total {{currentAttempt.total}}
-		<br/> Final total {{currentAttempt.finalTotal}} %
+		<br/> Final total {{currentAttempt.finalTotal | number : '1.2-2'}} %
 		<br/>
 	</p>
 
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
 		<h3>Q{{i+1}} {{anws.question.text}}</h3>
-		<p>Points: {{ anws.total - anws.adjustment}} + {{anws.adjustment}} = {{anws.total}} of {{anws.question.max}} => {{anws.finalTotal}}
-			% </p>
+		<p>Points: {{ anws.total - anws.adjustment}} + {{anws.adjustment}} = {{anws.total}} 
+			out of {{anws.question.max}} => {{anws.finalTotal | number : '1.2-2'}} % </p>
 		<p>Note: {{anws.note}} </p>
 
 		<table class="table table-hover table-striped">
@@ -41,6 +41,7 @@
 				<tr>
 					<th>Criterea</th>
 					<th>Deductions</th>
+					<th>Grade</th>
 					<th>Advice</th>
 				</tr>
 			</thead>
@@ -48,6 +49,7 @@
 				<tr *ngFor="let advice of currentAttempt.examAdvices; let j=index">
 					<td> {{advice.examCriterea.name}} </td>
 					<td> {{advice.total}} </td>
+					<td> {{advice.advice.grade}} </td>
 					<td> {{advice.advice.text}} </td>
 				</tr>
 			</tbody>

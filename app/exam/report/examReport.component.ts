@@ -23,27 +23,8 @@ export class ExamReportComponent implements OnInit {
 	constructor(private userService: UserService,
 		private examReportDTS: ExamReportDataTransferService) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-		this.currentAttemptIndex = 0
 		this.currentExam = this.examReportDTS.currentExam;
-		this.currentAttempt = this.examReportDTS.examAttempts[this.currentAttemptIndex];
-
-		this.examReportDTS.examAttempts.forEach(attempt => {
-			attempt.anwsers.forEach(anws => {
-				anws.question = this.currentExam.questions.find(x=> x.id == anws.questionID);
-
-				anws.mistakes.forEach(mistake => {
-					mistake.argument = anws.question.arguments.find(x=> x.id == mistake.argumentID);
-				});
-			});
-
-			attempt.examAdvices.forEach(advice => {
-				advice.examCriterea = this.currentExam.examCriterea.find(x=> x.id == advice.examCritereaID);
-				advice.advice = advice.examCriterea.advices.find(x=> x.id == advice.adviceID);
-				
-			});
-		});
-
-
+			this.moveTo(0);
 	}
 
 	ngOnInit() {
