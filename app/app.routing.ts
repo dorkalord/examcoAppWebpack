@@ -14,6 +14,7 @@ import { ExamAttemptListComponent } from './ExamAttempt/examAttempt-list';
 import { ExamAttemptEditComponent } from './ExamAttempt/edit/examAttempt-edit.component';
 import { UserListComponent } from './user/user-list.component';
 import { ExamGradeComponent } from './exam/grade/examGrade.component';
+import { ExamReportComponent } from './exam/report/examReport.component';
 
 const appRoutes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -35,6 +36,7 @@ const appRoutes: Routes = [
     { path: 'attempts/:examID/edit', component: ExamAttemptEditComponent, canActivate: [AuthGuard]  },
 
     { path: 'grade/:examID/edit', component: ExamGradeComponent, canActivate: [AuthGuard]  },
+    { path: 'exam/report/:examID', component: ExamReportComponent, canActivate: [AuthGuard]  },
 
     { path: 'users', component: UserListComponent, canActivate: [AuthGuard]  },
 

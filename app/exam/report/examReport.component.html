@@ -1,34 +1,14 @@
+<h1>Grade exam: {{currentExam.course.code}} {{currentExam.date | date:'dd.mm.yyyy'}}s </h1>
+
 <div class="container">
-	<h1>Grade exam: short name date</h1>
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Question</th>
-				<th>Proposed weight</th>
-				<th>Final weight</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr *ngFor="let qestion of currentExam.questions; let i=index">
-				<td>{{qestion.text}} </td>
-				<td>{{qestion.proposedWeight}} </td>
-				<td>
-					<div class="form-group">
-						<input type="number" value="0" min="0" max="100" class="form-control" [(ngModel)]="currentExam.questions[i].finalWeight"
-						 [ngModelOptions]="{standalone: true}" (change)="calculate()">
-						<!--(change)="updateCriterea($event.target.value, criterea.id)">-->
-						<small *ngIf="currentExam.questions[i].finalWeight<0" class="text-danger">
-							Must be a positive number
-						</small>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<div class="btn-group pull-right" role="group">
-		<button type="button" class="form-control" class="btn btn-success" (click)="saveFinal()">
-			Save
-		</button>
+	<h2>Student: {{this.currentAttempt.studentID}} </h2>
+
+	<div class="row">
+		{{currentAttempt.finalTotal}}
+	</div>
+
+	<div class="row" *ngFor=*ngFor="let qestion of currentExam.questions; let i=index">
+		<p>{{question.text}}</p>
 	</div>
 
 </div>

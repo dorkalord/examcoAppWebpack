@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 
 import { User, Exam, ExamFull, Question, Question2 } from '../../_models/index';
-import { UserService } from '../../_services/index';
+import { UserService, ExamService } from '../../_services/index';
 import { ExamGradeDataTransferService } from '../../_services/examGrade-datatransfer.service';
 import { chartDef, ChartData } from '../../_models/chart';
 import { critereaDisplay } from '../../_services/examAttempt-datatransfer.service';
@@ -115,6 +115,7 @@ export class ExamGradeComponent implements OnInit {
 
 	constructor(private userService: UserService,
 		private examGradeDTS: ExamGradeDataTransferService,
+		private examService: ExamService,
 		private elRef: ElementRef) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		//this.currentExam.examCriterea[i].advices
@@ -506,19 +507,15 @@ export class ExamGradeComponent implements OnInit {
 	}
 
 	saveFinal() {
-		let examTotal: number = 0;
 
-		this.currentExam.questions.forEach(x => examTotal += x.finalWeight);
+		console.log(this.examGradeDTS.currentExam);
+		this.examService.grade(this.examGradeDTS.currentExam).subscribe(e => { 
+			console.log("success");
+			console.log(e);
+		}, err => {
+			console.log("error");
+			console.log(err);
+		 });
 
-		this.examGradeDTS.examAttempts.forEach(attempt => {
-			attempt.finalTotal = 0;
-			attempt.anwsers.forEach(anws => {
-				anws.finalTotal = anws.total * this.currentExam.questions.find(x => x.id == anws.questionID).finalWeight / examTotal;
-				attempt.finalTotal += anws.finalTotal;
-			});
-		});
-
-		this.calculateFinal();
-		//need to push
 	}
 }

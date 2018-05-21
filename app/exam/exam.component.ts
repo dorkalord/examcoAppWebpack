@@ -106,8 +106,18 @@ export class ExamComponent implements OnInit {
 
         
     }
-    generateReports(id: number) {
-        alert("Gnereates student reports, allows to send via email")
+    generateReports(examID: number) {
+        this.loading = true;
+
+        this.examService.getByIdForCensoring(examID).subscribe(e => {
+            this.ExamGradeDataTransferService.currentExam = e;
+
+                this.examAttemptService.getByExam(examID).subscribe(data => {
+                    this.ExamGradeDataTransferService.examAttempts = data;
+
+                    this.router.navigateByUrl('exam/report/' + examID );
+                });
+        });
     }
     exportCensorship(id: number) {
         this.exportService.getAttempts(id).subscribe(

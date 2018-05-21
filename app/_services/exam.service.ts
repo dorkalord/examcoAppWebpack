@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 
 import { AppConfig } from '../app.config';
-import { Exam, ExamCriterea } from '../_models/exam';
+import { Exam, ExamCriterea, ExamFull } from '../_models/exam';
 
 @Injectable()
 export class ExamService {
@@ -42,6 +42,10 @@ export class ExamService {
 
     update(course: Exam) {
         return this.http.put(this.config.apiUrl + '/exam/' + course.id, course, this.jwt());
+    }
+
+    grade(course: ExamFull) {
+        return this.http.put(this.config.apiUrl + '/exam/grade/' + course.id, course, this.jwt());
     }
 
     delete(id: number) {
