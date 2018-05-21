@@ -337,7 +337,8 @@ export class ExamAttemptEditComponent implements OnInit {
                 adjustedWeight: weight,
 
                 argumentID: argID,
-                anwserID: this.currentAttempt.anwsers[anwserIndex].id
+                anwserID: this.currentAttempt.anwsers[anwserIndex].id,
+                argument:null
             };
             this.currentAttempt.anwsers[anwserIndex].mistakes.push(newMistatake);
 

@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 import { CensorService } from '../_services/censor.service';
 import { ExportService } from '../_services/export.service';
 import { ExamGradeDataTransferService } from '../_services/examGrade-datatransfer.service';
+import { ExamDataTransferService } from '../_services/exam-datatransfer.service';
+import { ExamReportDataTransferService } from '../_services/examReport-datatransfer.service.';
 declare var require: any;
 
 @Component({
@@ -36,7 +38,8 @@ export class ExamComponent implements OnInit {
         private exportService: ExportService,
         private router: Router,
         private ExamAttemptDataTransferService: ExamAttemptDataTransferService,
-        private ExamGradeDataTransferService: ExamGradeDataTransferService
+        private ExamGradeDataTransferService: ExamGradeDataTransferService,
+        private ExamReportDTS: ExamReportDataTransferService
     ) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.examlist = new Array();
@@ -110,10 +113,10 @@ export class ExamComponent implements OnInit {
         this.loading = true;
 
         this.examService.getByIdForCensoring(examID).subscribe(e => {
-            this.ExamGradeDataTransferService.currentExam = e;
+            this.ExamReportDTS.currentExam = e;
 
                 this.examAttemptService.getByExam(examID).subscribe(data => {
-                    this.ExamGradeDataTransferService.examAttempts = data;
+                    this.ExamReportDTS.examAttempts = data;
 
                     this.router.navigateByUrl('exam/report/' + examID );
                 });

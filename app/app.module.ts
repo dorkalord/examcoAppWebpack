@@ -47,6 +47,7 @@ import { ExamGradeComponent } from './exam/grade/examGrade.component';
 import { ExamGradeDataTransferService } from './_services/examGrade-datatransfer.service';
 import { ExamReportComponent } from './exam/report/examReport.component';
 import { NouisliderModule } from 'ng2-nouislider';
+import { ExamReportDataTransferService } from './_services/examReport-datatransfer.service.';
 
 @NgModule({
     imports: [
@@ -107,7 +108,8 @@ import { NouisliderModule } from 'ng2-nouislider';
         AnwserService,
         ExportService,
         ArgumentService,
-        ExamGradeDataTransferService
+        ExamGradeDataTransferService,
+        ExamReportDataTransferService
     ],
     bootstrap: [AppComponent]
 })
