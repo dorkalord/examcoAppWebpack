@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { User } from '../_models/index';
-import { UserService } from '../_services/index';
+import { UserService, AlertService } from '../_services/index';
 import { ExamService } from '../_services/exam.service';
 import { Exam } from '../_models/exam';
 import { StateService } from '../_services/state.service';
@@ -39,7 +39,8 @@ export class ExamComponent implements OnInit {
         private router: Router,
         private ExamAttemptDataTransferService: ExamAttemptDataTransferService,
         private ExamGradeDataTransferService: ExamGradeDataTransferService,
-        private ExamReportDTS: ExamReportDataTransferService
+        private ExamReportDTS: ExamReportDataTransferService,
+        private alertService: AlertService
     ) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.examlist = new Array();
@@ -60,20 +61,24 @@ export class ExamComponent implements OnInit {
                 this.examService.getAllExamsofCensor(this.currentUser.id).subscribe(res => {
                     this.censorExams = res;
                     this.loading = false;
-                });
-            });
-        });
+                },
+                error => { this.alertService.error("Error geting data."); this.loading = false; });
+            },
+            error => { this.alertService.error("Error geting data."); this.loading = false; });
+        },
+        error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
 
     edit(id: number) {
-        alert("Waiting for implentation")
+        this.alertService.error("Waiting implementation");
     }
 
     chanegeState(id: number, state: number) {
         this.loading = true;
         this.examService.updateExamState(id, state).subscribe(data => {
             this.loadData();
-        });
+        },
+        error => { this.alertService.error("Error updating state!"); this.loading = false; });
     }
 
     censor(examID: number) {
@@ -89,9 +94,12 @@ export class ExamComponent implements OnInit {
                     this.ExamAttemptDataTransferService.examAttempts = data;
 
                     this.router.navigateByUrl('/attempts/' + examID + '/censor/' + this.ExamAttemptDataTransferService.currentCensor.id);
-                });
-            });
-        });
+                },
+                error => { this.alertService.error("Error getting data."); this.loading = false; });
+            },
+            error => { this.alertService.error("Error getting data."); this.loading = false; });
+        },
+        error => { this.alertService.error("Error getting data."); this.loading = false; });
     }
 
     grade(examID: number) {
@@ -103,12 +111,14 @@ export class ExamComponent implements OnInit {
                 this.examAttemptService.getByExam(examID).subscribe(data => {
                     this.ExamGradeDataTransferService.examAttempts = data;
 
+                    this.loading = false;
                     this.router.navigateByUrl('/grade/' + examID + '/edit');
-                });
-        });
-
-        
+                },
+                error => { this.alertService.error("Error geting data."); this.loading = false; });
+        },
+        error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
+    
     generateReports(examID: number) {
         this.loading = true;
 
@@ -138,35 +148,42 @@ export class ExamComponent implements OnInit {
                                 
                             });
                         });
-
+                        
+                        this.loading = false;
                         this.router.navigateByUrl('exam/report/' + examID );
-                    } );
-
-                    
-                });
-        });
+                    },
+                    error => { this.alertService.error("Error geting data."); this.loading = false; });
+                },
+                error => { this.alertService.error("Error geting data."); this.loading = false; });
+        },
+        error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
+
     exportCensorship(id: number) {
+        this.alertService.error("Waiting implementation");
+        
+        /*this.loading = true;
         this.exportService.getAttempts(id).subscribe(
             data => {
                 let blob = new Blob([data.blob()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
                 let url = window.URL.createObjectURL(blob);
                 window.open(url);
-
+                this.loading = false;
             },
-            error => alert("Error downloading file!"),
+            error => { this.alertService.error("Error downloading file"); this.loading = false; },
             () => console.log("OK!")
-        );
+        );/**/
     }
     export(id: number) {
+        this.loading = true;
         this.exportService.getExam(id).subscribe(
             data => {
                 let blob = new Blob([data.blob()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
                 let url = window.URL.createObjectURL(blob);
                 window.open(url);
-
+                this.loading = false;
             },
-            error => alert("Error downloading file!"),
+            error => { this.alertService.error("Error downloading file"); this.loading = false; },
             () => console.log("OK!")
         );
     }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 
 import { User, Exam, ExamFull, Question, Question2 } from '../../_models/index';
-import { UserService, ExamService } from '../../_services/index';
+import { UserService, ExamService, AlertService } from '../../_services/index';
 import { ExamGradeDataTransferService } from '../../_services/examGrade-datatransfer.service';
 import { chartDef, ChartData } from '../../_models/chart';
 import { critereaDisplay } from '../../_services/examAttempt-datatransfer.service';
@@ -15,6 +15,7 @@ declare var require: any;
 export class ExamGradeComponent implements OnInit {
 	currentUser: User;
 	users: User[] = [];
+	public loading: boolean = false;
 
 	public gradeChart: chartDef = {
 		chartOptions: {
@@ -116,7 +117,8 @@ export class ExamGradeComponent implements OnInit {
 	constructor(private userService: UserService,
 		private examGradeDTS: ExamGradeDataTransferService,
 		private examService: ExamService,
-		private elRef: ElementRef) {
+		private elRef: ElementRef,
+		private alertService: AlertService) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		//this.currentExam.examCriterea[i].advices
 		this.currentExam = this.examGradeDTS.currentExam;
@@ -507,14 +509,18 @@ export class ExamGradeComponent implements OnInit {
 	}
 
 	saveFinal() {
-
+		this.loading = true;
 		console.log(this.examGradeDTS.currentExam);
-		this.examService.grade(this.examGradeDTS.currentExam).subscribe(e => { 
+		this.examService.grade(this.examGradeDTS.currentExam).subscribe(e => {
+			this.alertService.success("Successfully graded exams.");
 			console.log("success");
 			console.log(e);
+			this.loading = false;
 		}, err => {
+			this.alertService.error("Error grading exam.");
 			console.log("error");
 			console.log(err);
+			this.loading = false;
 		 });
 
 	}

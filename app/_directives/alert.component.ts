@@ -16,4 +16,9 @@ export class AlertComponent {
     ngOnInit() {
         this.alertService.getMessage().subscribe(message => { this.message = message; });
     }
+
+    hide(){
+        console.log("hide alert");
+       this.alertService.hide();
+    }
 }

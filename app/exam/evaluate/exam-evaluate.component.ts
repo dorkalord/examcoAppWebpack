@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { User } from '../../_models/index';
-import { UserService, CourseService } from '../../_services/index';
+import { UserService, CourseService, AlertService } from '../../_services/index';
 import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Course, Topic } from '../../_models/course';
@@ -24,6 +24,7 @@ export class ExamEvaluateComponent implements OnInit {
     public evaluators: User[];
     public evaluatorForm: FormGroup;
     public counter: number;
+    public loading: boolean;
     id: number;
     sub: any;
 
@@ -31,9 +32,10 @@ export class ExamEvaluateComponent implements OnInit {
         private examService: ExamService,
         private courseService: CourseService,
         private _fb: FormBuilder,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        private alertService: AlertService) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+        this.loading = false;
     }
 
     ngOnInit() {
