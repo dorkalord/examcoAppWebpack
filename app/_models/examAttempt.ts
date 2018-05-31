@@ -13,6 +13,7 @@ export class ExamAttempt {
     examID: number;
     censorID: number;
     studentID: number;
+    student: any;
 
     anwsers: Anwser[];
     generalCritereaImpacts: GeneralCritereaImpact[];

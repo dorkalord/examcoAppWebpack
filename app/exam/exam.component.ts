@@ -93,7 +93,14 @@ export class ExamComponent implements OnInit {
                 this.examAttemptService.getByCensorExam(this.ExamAttemptDataTransferService.currentCensor.id, examID).subscribe(data => {
                     this.ExamAttemptDataTransferService.examAttempts = data;
 
-                    this.router.navigateByUrl('/attempts/' + examID + '/censor/' + this.ExamAttemptDataTransferService.currentCensor.id);
+                    this.userService.getAll().subscribe(users => { 
+                        let userlist: User[] = users;
+                        this.ExamAttemptDataTransferService.examAttempts.forEach(element => {
+                            element.student = userlist.find(x => x.id == element.studentID);
+                        });
+                        
+                        this.router.navigateByUrl('/attempts/' + examID + '/censor/' + this.ExamAttemptDataTransferService.currentCensor.id);
+                    });
                 },
                 error => { this.alertService.error("Error getting data."); this.loading = false; });
             },

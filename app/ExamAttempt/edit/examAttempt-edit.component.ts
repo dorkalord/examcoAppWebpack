@@ -29,7 +29,7 @@ declare var require: any;
 
 export class ExamAttemptEditComponent implements OnInit {
     currentUser: User;
-    loading: boolean;
+    public loading: boolean;
     currentExam: ExamFull;
     currentAttempt: ExamAttempt2;
     currentQuestion: Question2;
@@ -53,7 +53,7 @@ export class ExamAttemptEditComponent implements OnInit {
         private argumentService: ArgumentService,
         private _fb: FormBuilder,
         private router: Router,
-        private examAttemptDataTransferService: ExamAttemptDataTransferService
+        public examAttemptDataTransferService: ExamAttemptDataTransferService
     ) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         let i: number;
@@ -80,10 +80,12 @@ export class ExamAttemptEditComponent implements OnInit {
         this.currentQuestion = this.questionDisplayList[this.currentQuestionIndex];
         this.myForm = this.initAnwser(this.currentQuestion);
         this.updateStats(this.currentQuestionIndex);
+        this.loading = false;
     }
 
     ngOnInit() {
         this.argumentForm = this.initNewArgument();
+        this.loading = false;
     }
 
     initNewArgument() {
@@ -198,7 +200,7 @@ export class ExamAttemptEditComponent implements OnInit {
     }
 
     moveTo(i: number) {
-
+        this.loading = true;
         this.anwserService.update(this.currentAttempt.anwsers[this.currentQuestionIndex]).subscribe(
             data => {
                 this.generalCritereaImpactService.updateMany(this.currentAttempt.generalCritereaImpacts.filter(x => x.anwserID == this.currentAttempt.anwsers[this.currentQuestionIndex].id && x.mistakeID == null)).subscribe(
@@ -208,25 +210,27 @@ export class ExamAttemptEditComponent implements OnInit {
                         this.critereaDisplayList = [];
                         this.myForm = this.initAnwser(this.currentQuestion);
                         this.updateStats(this.currentQuestionIndex);
+                        this.loading = false;
                     },
-                    err => { alert("Something failed" + err) }
+                    err => { alert("Something failed" + err);  this.loading = false;}
                 )
             },
-            error => { alert("Something went wrong\n" + error) }
+            error => { alert("Something went wrong\n" + error);  this.loading = false; }
         );
 
 
     }
 
     save(i: number, notification: boolean = true) {
+        this.loading = true;
         this.anwserService.update(this.currentAttempt.anwsers[i]).subscribe(
             data => {
                 this.generalCritereaImpactService.updateMany(this.currentAttempt.generalCritereaImpacts.filter(x => x.anwserID == this.currentAttempt.anwsers[i].id && x.mistakeID == null)).subscribe(
-                    data => { if(notification) {alert("Changes saved"); } },
-                    err => { alert("Something failed" + err.body) }
+                    data => { if(notification) {alert("Changes saved");  this.loading = false; } },
+                    err => { alert("Something failed" + err.body);  this.loading = false; }
                 )
             },
-            error => { alert("Something went wrong\n" + error.body) }
+            error => { alert("Something went wrong\n" + error.body);  this.loading = false; }
         );
     }
 
@@ -370,7 +374,8 @@ export class ExamAttemptEditComponent implements OnInit {
 
             this.updateStats(qindex);
         }
-
+    
+        this.loading = false;
         console.log("current", this.currentAttempt);
 
     }
@@ -423,6 +428,7 @@ export class ExamAttemptEditComponent implements OnInit {
         this.argumentForm = this.initNewArgument();
         this.save(this.currentQuestionIndex, false);
         jQuery(this.createJustificationModal.nativeElement).modal('show');
+        this.loading = false;
     }
 
     saveJustification(){
@@ -444,5 +450,7 @@ export class ExamAttemptEditComponent implements OnInit {
         jQuery(this.createJustificationModal.nativeElement).modal('hide');
         this.argumentForm = this.initNewArgument();
     }
+
+    updateCriterea(){}
 }
 

@@ -37,9 +37,11 @@ export class ExamAttemptListComponent implements OnInit {
         private examAttemptDataTransferService: ExamAttemptDataTransferService
     ) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.loading = false;
+        this.loading = true;
         this.examAttemptList = this.examAttemptDataTransferService.examAttempts;
         this.currentExam = this.examAttemptDataTransferService.currentExam;
+
+
     }
 
     ngOnInit() {
@@ -53,8 +55,13 @@ export class ExamAttemptListComponent implements OnInit {
             this.examAttemptDataTransferService.currentExam = data;
             this.examAttemptService.getById(attemptID).subscribe(res => {
                 this.examAttemptDataTransferService.currentExamAttempt = res;
-                jQuery(this.selectModal.nativeElement).modal('hide');
-                this.router.navigateByUrl('/attempts/' + res.id + '/edit');
+
+                this.userService.getById(res.studentID).subscribe(student => {
+                    this.examAttemptDataTransferService.student = student;
+                    jQuery(this.selectModal.nativeElement).modal('hide');
+                    this.loading = false;
+                    this.router.navigateByUrl('/attempts/' + res.id + '/edit');
+                })
             });
         });
     }
@@ -76,10 +83,12 @@ export class ExamAttemptListComponent implements OnInit {
     }
 
     remove(id: number) {
-        this.examAttemptService.delete(id).subscribe(res =>{
-            let i = this.examAttemptList.findIndex(x=>x.id == id);
-            this.examAttemptList.splice(i,1);
+        this.loading = true;
+        this.examAttemptService.delete(id).subscribe(res => {
+            let i = this.examAttemptList.findIndex(x => x.id == id);
+            this.examAttemptList.splice(i, 1);
             this.loadAllUsers();
+
         });
     }
 
@@ -89,6 +98,9 @@ export class ExamAttemptListComponent implements OnInit {
     }
 
     private loadAllUsers() {
-        this.userService.getStudents(this.currentExam.id).subscribe(users => { this.users = users; this.allusers = users; });
+        this.userService.getStudents(this.currentExam.id).subscribe(users => {
+            this.users = users; this.allusers = users;
+            this.loading = false;
+        });
     }
 }

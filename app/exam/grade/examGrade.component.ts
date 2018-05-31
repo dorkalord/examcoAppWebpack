@@ -409,9 +409,9 @@ export class ExamGradeComponent implements OnInit {
 		//finds the minimum and maximum and calculates how it should strech throug the grades
 		let min: number = points.reduce((min, p) => p < min ? p : min, points[0]);
 		let max: number = points.reduce((max, p) => p > max ? p : max, points[0]);
-		let delta: number = (max - min + 1) / 6;
+		let delta: number = (max - min + 2) / this.currentExam.examCriterea[critereaIndex].advices.length ;
 
-		this.sliderCfg.range.min = min - 1;
+		this.sliderCfg.range.min = min;
 		this.sliderCfg.range.max = max;
 		console.log("points");
 		console.log(points);
@@ -446,12 +446,17 @@ export class ExamGradeComponent implements OnInit {
 					reduce((a, b) => a + b.weight, 0));
 		});
 
-
 		this.currentExam.examCriterea[critereaIndex].advices.forEach((element, index) => {
-			this.dimensionChart.chartData[0].data.push(
-				points.filter(x => element.min < x && x <= element.max).length);
-
-
+			let temp =  0;
+			points.forEach(p => {
+				if(element.max == 0 && p == 0){
+					temp++;
+				}
+				else if(element.min <= p && p < element.max){
+					temp++;
+				}
+			});
+			this.dimensionChart.chartData[0].data.push( temp);
 			/*console.log("points " + element.grade);
 			console.log("min: " + element.min + "  max: " + element.max);
 			console.log(points.filter(x => element.min < x && x <= element.max));
@@ -487,8 +492,8 @@ export class ExamGradeComponent implements OnInit {
 
 	analyseDimension(index: number) {
 		this.currentCriteria = this.currentExam.examCriterea[index];
-
-		this.calculateStudentCritereaGrades(this.currentCriteria.id);
+		console.log(this.currentCriteria);
+		this.calculateCriteraPoints(this.currentCriteria.id);
 		this.showIndepth = true;
 	}
 

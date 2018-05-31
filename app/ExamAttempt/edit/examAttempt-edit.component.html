@@ -1,8 +1,36 @@
+<div class="jumobtron" style="opacity:    0.5; 
+  width:      100%;
+  height:     100%; 
+  z-index:    10;
+  top:        0; 
+  left:       0; 
+  position:   fixed; 
+      -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;" *ngIf="loading">
+    <h1>Loading...</h1>
+</div>
 <h2>
-    Exam on Course {{currentExam.course.code}}, Student: {{currentAttempt.studentID}}
+    Exam on Course {{currentExam.course.code}}, Student: {{examAttemptDataTransferService.student.name}}
 </h2>
 Points {{currentAttempt.total}}
 <div class="container panel">
+    <div class="container">
+        <ul class="pagination">
+            <li [ngClass]="(currentQuestionIndex>0)?'active':'disabled'" *ngIf="currentQuestionIndex>0">
+                <a (click)="moveTo(currentQuestionIndex-1)">Previous</a>
+            </li>
+            <li *ngFor="let crit of questionDisplayList; let i=index" [ngClass]="(currentQuestionIndex===i)?'active':''">
+                <a (click)="moveTo(i)">{{i+1}}</a>
+            </li>
+            <li [ngClass]="(currentQuestionIndex<questionDisplayList.length-1)?'active':'disabled'" *ngIf="currentQuestionIndex<questionDisplayList.length-1 && myForm.value.completion!=null">
+                <a (click)="moveTo(currentQuestionIndex+1)">Next</a>
+            </li>
+        </ul>
+
+    </div>
     <form [formGroup]="myForm">
         <div class="panel-heading">
             <h3>Q{{currentQuestionIndex+1}}: {{myForm.value.questionText}}</h3>
