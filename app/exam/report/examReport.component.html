@@ -1,27 +1,38 @@
-<h1>Exam report: {{currentExam.course.code}} {{currentExam.date | date:'dd.mm.yyyy'}} </h1>
-
+<h1>Poročilo o izpitu: {{currentExam.course.code}} iz dne {{currentExam.date | date:'dd.mm.yyyy'}} </h1>
+<div class="container">
+	<ul class="pagination">
+		<li [ngClass]="(currentAttemptIndex>0)?'active':'disabled'" *ngIf="currentAttemptIndex>0">
+			<a (click)="moveTo(currentAttemptIndex-1)">Previous</a>
+		</li>
+		<li *ngFor="let attempt of examReportDTS.examAttempts; let i=index" [ngClass]="(currentAttemptIndex===i)?'active':''">
+			<a (click)="moveTo(i)">{{i+1}}</a>
+		</li>
+		<li [ngClass]="(currentAttemptIndex<examReportDTS.examAttempts.length-1)?'active':'disabled'" *ngIf="currentAttemptIndex<examReportDTS.examAttempts.length-1">
+			<a (click)="moveTo(currentAttemptIndex+1)">Next</a>
+		</li>
+	</ul>
+</div>
 <div class="container panel" style="background-color: lavender">
-	<h2>Student: {{this.currentAttempt.student.name}} </h2>
+	<h2>Študent: {{this.currentAttempt.student.name}} </h2>
 
 	<p>
-		Total {{currentAttempt.total}}
-		<br/> Final total {{currentAttempt.finalTotal | number : '1.2-2'}} %
+		Točke {{currentAttempt.total | number : '1.2-2' }} od 800
+		<br/> Končni odstotki {{currentAttempt.finalTotal | number : '1.2-2'}} %
 		<br/>
 	</p>
 
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
-		<h3>Q{{i+1}} {{anws.question.text}}</h3>
-		<p>points: {{ anws.total - anws.adjustment}} + adjustment: {{anws.adjustment}} = {{anws.total}} 
-			* ( qestion weight: {{anws.question.finalWeight}} /  qestion weight total: {{anws.question.max}} ) = exam percentage: {{anws.finalTotal
-			| number : '1.2-2'}} % </p>
-		<p>Note: {{anws.note}} </p>
+		<h3>{{anws.question.text}}</h3>
+		<h5>Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} % </h5>
+		<h5>Točke: {{anws.finalTotal | number : '1.2-2'}} </h5>
+		<p>Komentar: {{anws.note}} </p>
 
 		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
-					<th>Mistake</th>
-					<th>Impact</th>
-					<th>Advice</th>
+					<th>Napaka</th>
+					<th>Vpliv</th>
+					<th>Priporočilo</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -36,14 +47,14 @@
 	</div>
 
 	<div class="container panel">
-		<h3>Exam critera performance</h3>
+		<h3>Doseški po različnih kriterijih</h3>
 		<table class="table table-hover table-striped">
 			<thead>
 				<tr>
-					<th>Criterea</th>
-					<th>Deductions</th>
-					<th>Grade</th>
-					<th>Advice</th>
+					<th>Kriterj</th>
+					<th>Točke</th>
+					<th>Ocena</th>
+					<th>Priporočilo</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -55,15 +66,15 @@
 				</tr>
 			</tbody>
 
-			
+
 		</table>
 		<div class="container row">
-				<div style="display: block">
-					<canvas baseChart [(datasets)]="gradeChart.chartData" [labels]="gradeChart.chartLabels" [options]="gradeChart.chartOptions"
-					 [legend]="gradeChart.chartLegend" [chartType]="gradeChart.chartType">
-					</canvas>
-				</div>
+			<div style="display: block">
+				<canvas baseChart [(datasets)]="gradeChart.chartData" [labels]="gradeChart.chartLabels" [options]="gradeChart.chartOptions"
+				 [legend]="gradeChart.chartLegend" [chartType]="gradeChart.chartType">
+				</canvas>
 			</div>
+		</div>
 	</div>
 </div>
 
@@ -82,5 +93,5 @@
 </div>
 
 <div class="margin-20">
-	<pre>form value: <br>{{	allExamAdvices | json}}</pre>
+	<pre>form value: <br>{{	currentAttempt | json}}</pre>
 </div>

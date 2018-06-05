@@ -129,7 +129,7 @@ export class ExamAttemptEditComponent implements OnInit {
         this.currentExam.examCriterea.forEach(ec => {
             //general criterea adjustments of anwser
             let adj: GeneralCritereaImpact = this.currentAttempt.generalCritereaImpacts.find(x => x.examCritereaID === ec.id
-                && x.anwserID == a.id && x.mistakeID == null);
+                && x.anwserID == a.id && x.mistakeID == null );
 
             //general critereas of anwser
             let calc: number = 0;
@@ -245,7 +245,7 @@ export class ExamAttemptEditComponent implements OnInit {
         }
 
         this.currentAttempt.total = 0;
-        this.currentAttempt.anwsers.map(x => this.currentAttempt.total += x.total);
+        this.currentAttempt.anwsers.map(x => {if(x.completion!="Blank") {this.currentAttempt.total += x.total}});
 
         let sum: number = 0, index: number = 0;
 

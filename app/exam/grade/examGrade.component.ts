@@ -1,11 +1,12 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 
-import { User, Exam, ExamFull, Question, Question2 } from '../../_models/index';
+import { User, Exam, ExamFull, Question, Question2, ArgumentCriterea } from '../../_models/index';
 import { UserService, ExamService, AlertService } from '../../_services/index';
 import { ExamGradeDataTransferService } from '../../_services/examGrade-datatransfer.service';
 import { chartDef, ChartData } from '../../_models/chart';
 import { critereaDisplay } from '../../_services/examAttempt-datatransfer.service';
 import { Anwser } from '../../_models/examAttempt';
+import { query } from '@angular/core/src/animation/dsl';
 declare var require: any;
 
 @Component({
@@ -411,12 +412,21 @@ export class ExamGradeComponent implements OnInit {
 		let max: number = points.reduce((max, p) => p > max ? p : max, points[0]);
 		let delta: number = (max - min + 2) / this.currentExam.examCriterea[critereaIndex].advices.length ;
 
+		let maxDeduction: number = 0
+		this.currentExam.questions.forEach(q => {
+			q.arguments.forEach(arg => {
+				maxDeduction += arg.argumentCritereas
+					.filter(x => x.examCritereaID ==  this.currentExam.examCriterea[critereaIndex].id)
+					.reduce((a, b) => a + b.severity, 0)
+			})
+		});
+
 		this.sliderCfg.range.min = min;
 		this.sliderCfg.range.max = max;
 		console.log("points");
 		console.log(points);
 
-		console.log("min: " + min + "  max: " + max);
+		console.log("min: " + min + "  max: " + max + " max deuction " + maxDeduction);
 
 		//sets the range for each grade
 
@@ -427,6 +437,10 @@ export class ExamGradeComponent implements OnInit {
 			element.min = Math.round(max - delta * (index + 1));
 
 		});
+		if(maxDeduction < min){
+			this.currentExam.examCriterea[critereaIndex].advices[this.currentExam.examCriterea[critereaIndex].advices.length - 1].min = maxDeduction - 1;
+		}
+		
 
 		this.calculateStudentCritereaGrades(critereaID);
 	}

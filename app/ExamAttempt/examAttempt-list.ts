@@ -83,13 +83,13 @@ export class ExamAttemptListComponent implements OnInit {
     }
 
     remove(id: number) {
-        this.loading = true;
+        /*this.loading = true;
         this.examAttemptService.delete(id).subscribe(res => {
             let i = this.examAttemptList.findIndex(x => x.id == id);
             this.examAttemptList.splice(i, 1);
             this.loadAllUsers();
 
-        });
+        });*/
     }
 
     update(query: string) {

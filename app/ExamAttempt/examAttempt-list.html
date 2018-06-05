@@ -9,10 +9,15 @@
        -moz-animation: fadein 2s; /* Firefox < 16 */
         -ms-animation: fadein 2s; /* Internet Explorer */
          -o-animation: fadein 2s; /* Opera < 12.1 */
-            animation: fadein 2s;" *ngIf="loading" >
-  <h1>Loading...</h1>
+            animation: fadein 2s;" *ngIf="loading">
+    <h1>Loading...</h1>
 </div>
 <div>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectModal">
+            Select student to censor
+        </button>
+    </div>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -33,18 +38,14 @@
                             Edit
                         </button>
                         <button type="button" class="form-control" class="btn btn-danger" (click)="remove(attempt.id)">
-                             Remove 
+                            Remove
                         </button>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div class="btn-group" role="group">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectModal">
-            Select student to censor
-        </button>
-    </div>
+
 </div>
 
 <div class="modal fade modal-xl" id="selectModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" #selectModal>
