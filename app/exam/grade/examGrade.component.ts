@@ -100,6 +100,11 @@ export class ExamGradeComponent implements OnInit {
 				display: true,
 				text: 'Success in dimension',
 				fontSize: 20
+			},
+			scales: {
+				yAxes: [{
+					beginAtZero: true				
+				}]
 			}
 		},
 		chartLabels: [],
@@ -334,7 +339,7 @@ export class ExamGradeComponent implements OnInit {
 			});
 
 			let i: number = 10 - (ocena / max / 10);
-			
+
 			console.log(ocena);
 			ocene[Math.floor(i)] += 1;
 		});
@@ -410,13 +415,13 @@ export class ExamGradeComponent implements OnInit {
 		//finds the minimum and maximum and calculates how it should strech throug the grades
 		let min: number = points.reduce((min, p) => p < min ? p : min, points[0]);
 		let max: number = points.reduce((max, p) => p > max ? p : max, points[0]);
-		let delta: number = (max - min + 2) / this.currentExam.examCriterea[critereaIndex].advices.length ;
+		let delta: number = (max - min + 2) / this.currentExam.examCriterea[critereaIndex].advices.length;
 
 		let maxDeduction: number = 0
 		this.currentExam.questions.forEach(q => {
 			q.arguments.forEach(arg => {
 				maxDeduction += arg.argumentCritereas
-					.filter(x => x.examCritereaID ==  this.currentExam.examCriterea[critereaIndex].id)
+					.filter(x => x.examCritereaID == this.currentExam.examCriterea[critereaIndex].id)
 					.reduce((a, b) => a + b.severity, 0)
 			})
 		});
@@ -437,10 +442,10 @@ export class ExamGradeComponent implements OnInit {
 			element.min = Math.round(max - delta * (index + 1));
 
 		});
-		if(maxDeduction < min){
+		if (maxDeduction < min) {
 			this.currentExam.examCriterea[critereaIndex].advices[this.currentExam.examCriterea[critereaIndex].advices.length - 1].min = maxDeduction - 1;
 		}
-		
+
 
 		this.calculateStudentCritereaGrades(critereaID);
 	}
@@ -461,16 +466,16 @@ export class ExamGradeComponent implements OnInit {
 		});
 
 		this.currentExam.examCriterea[critereaIndex].advices.forEach((element, index) => {
-			let temp =  0;
+			let temp = 0;
 			points.forEach(p => {
-				if(element.max == 0 && p == 0){
+				if (element.max == 0 && p == 0) {
 					temp++;
 				}
-				else if(element.min <= p && p < element.max){
+				else if (element.min <= p && p < element.max) {
 					temp++;
 				}
 			});
-			this.dimensionChart.chartData[0].data.push( temp);
+			this.dimensionChart.chartData[0].data.push(temp);
 			/*console.log("points " + element.grade);
 			console.log("min: " + element.min + "  max: " + element.max);
 			console.log(points.filter(x => element.min < x && x <= element.max));
@@ -540,7 +545,7 @@ export class ExamGradeComponent implements OnInit {
 			console.log("error");
 			console.log(err);
 			this.loading = false;
-		 });
+		});
 
 	}
 }

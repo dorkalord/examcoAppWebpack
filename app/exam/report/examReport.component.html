@@ -12,7 +12,7 @@
 		</li>
 	</ul>
 </div>
-<div class="container panel" style="background-color: lavender">
+<div class="container panel" style="background-color: lavender; page-break-after: always;">
 	<h2>Študent: {{this.currentAttempt.student.name}} </h2>
 
 	<p>
@@ -20,58 +20,77 @@
 		<br/> Končni odstotki {{currentAttempt.finalTotal | number : '1.2-2'}} %
 		<br/>
 	</p>
-
+	<div class="container panel">
+		<plotly-plot [data]="graph.data" [layout]="graph.layout"></plotly-plot>
+	</div> 
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
 		<h3>{{anws.question.text}}</h3>
-		<h5>Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} % </h5>
-		<h5>Točke: {{anws.finalTotal | number : '1.2-2'}} </h5>
-		<p>Komentar: {{anws.note}} </p>
+		<div class="pull-right">
+			<p>
+				<span class="label label-success" *ngIf="anws.completion == 'Correct'">Pravilno</span>
+				<!--<span class="label label-warning" *ngIf="anws.completion == 'Attempted'">Delno pravilno</span>-->
+				<span class="label label-danger" *ngIf="anws.completion == 'Blank'">Prazno</span>
+			</p>
+		</div>
+		<div>
+			<h5>Točke: {{anws.finalTotal | number : '1.2-2'}} </h5>
+			<h5>Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} % </h5>
+			<p>Komentar: {{anws.note}} </p>
+		</div>
 
-		<table class="table table-hover table-striped">
-			<thead>
-				<tr>
-					<th>Napaka</th>
-					<th>Vpliv</th>
-					<th>Priporočilo</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let mistake of anws.mistakes; let j=index">
-					<td> {{mistake.argument.text}} </td>
-					<td> {{mistake.adjustedWeight}} </td>
-					<td> {{mistake.argument.advice}} </td>
-				</tr>
-			</tbody>
-		</table>
+		
 
+		<div>
+			<table class="table table-hover table-striped" *ngIf="anws.completion == 'Attempted'">
+				<thead>
+					<tr>
+						<th>Napaka</th>
+						<th>Vpliv</th>
+						<th>Priporočilo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let mistake of anws.mistakes; let j=index">
+						<td> {{mistake.argument.text}} </td>
+						<td> {{mistake.adjustedWeight}} </td>
+						<td> {{mistake.argument.advice}} </td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="container panel">
+				<plotly-plot [data]="graphs[i].data" [layout]="graphs[i].layout"></plotly-plot>
+			</div>
 	</div>
 
 	<div class="container panel">
-		<h3>Doseški po različnih kriterijih</h3>
-		<table class="table table-hover table-striped">
-			<thead>
-				<tr>
-					<th>Kriterj</th>
-					<th>Točke</th>
-					<th>Ocena</th>
-					<th>Priporočilo</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let advice of currentAttempt.examAdvices; let j=index">
-					<td> {{advice.examCriterea.name}} </td>
-					<td> {{advice.total}} </td>
-					<td> {{advice.advice.grade}} </td>
-					<td> {{advice.advice.text}} </td>
-				</tr>
-			</tbody>
+		<h3>Dosežki po različnih kriterijih</h3>
+		<div>
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th>Kriterj</th>
+						<th>Točke</th>
+						<th>Ocena</th>
+						<th>Priporočilo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let advice of currentAttempt.examAdvices; let j=index">
+						<td> {{advice.examCriterea.name}} </td>
+						<td> {{advice.total}} </td>
+						<td> {{advice.advice.grade}} </td>
+						<td> {{advice.advice.text}} </td>
+					</tr>
+				</tbody>
 
 
-		</table>
+			</table>
+		</div>
 		<div class="container row">
 			<div style="display: block">
-				<canvas baseChart [(datasets)]="gradeChart.chartData" [labels]="gradeChart.chartLabels" [options]="gradeChart.chartOptions"
-				 [legend]="gradeChart.chartLegend" [chartType]="gradeChart.chartType">
+				<canvas baseChart [(datasets)]="gradeRadarChart.chartData" [labels]="gradeRadarChart.chartLabels" [options]="gradeRadarChart.chartOptions"
+				 [legend]="gradeRadarChart.chartLegend" [chartType]="gradeRadarChart.chartType">
 				</canvas>
 			</div>
 		</div>
@@ -92,6 +111,6 @@
 	</ul>
 </div>
 
-<div class="margin-20">
+<!--<div class="margin-20">
 	<pre>form value: <br>{{	currentAttempt | json}}</pre>
-</div>
+</div>-->

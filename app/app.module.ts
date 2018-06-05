@@ -48,16 +48,20 @@ import { ExamGradeDataTransferService } from './_services/examGrade-datatransfer
 import { ExamReportComponent } from './exam/report/examReport.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { ExamReportDataTransferService } from './_services/examReport-datatransfer.service.';
+import { CommonModule } from '@angular/common';
+import { PlotlyModule } from 'angular-plotly.js';
 
 @NgModule({
     imports: [
+        CommonModule,
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
         ChartsModule,
         routing,
-        NouisliderModule 
+        NouisliderModule,
+        PlotlyModule
     ],
     declarations: [
         AppComponent,
