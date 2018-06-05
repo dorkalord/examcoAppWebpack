@@ -62,11 +62,11 @@ export class ExamComponent implements OnInit {
                     this.censorExams = res;
                     this.loading = false;
                 },
-                error => { this.alertService.error("Error geting data."); this.loading = false; });
+                    error => { this.alertService.error("Error geting data."); this.loading = false; });
             },
-            error => { this.alertService.error("Error geting data."); this.loading = false; });
+                error => { this.alertService.error("Error geting data."); this.loading = false; });
         },
-        error => { this.alertService.error("Error geting data."); this.loading = false; });
+            error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
 
     edit(id: number) {
@@ -78,7 +78,7 @@ export class ExamComponent implements OnInit {
         this.examService.updateExamState(id, state).subscribe(data => {
             this.loadData();
         },
-        error => { this.alertService.error("Error updating state!"); this.loading = false; });
+            error => { this.alertService.error("Error updating state!"); this.loading = false; });
     }
 
     censor(examID: number) {
@@ -93,20 +93,20 @@ export class ExamComponent implements OnInit {
                 this.examAttemptService.getByCensorExam(this.ExamAttemptDataTransferService.currentCensor.id, examID).subscribe(data => {
                     this.ExamAttemptDataTransferService.examAttempts = data;
 
-                    this.userService.getAll().subscribe(users => { 
+                    this.userService.getAll().subscribe(users => {
                         let userlist: User[] = users;
                         this.ExamAttemptDataTransferService.examAttempts.forEach(element => {
                             element.student = userlist.find(x => x.id == element.studentID);
                         });
-                        
+
                         this.router.navigateByUrl('/attempts/' + examID + '/censor/' + this.ExamAttemptDataTransferService.currentCensor.id);
                     });
                 },
-                error => { this.alertService.error("Error getting data."); this.loading = false; });
+                    error => { this.alertService.error("Error getting data."); this.loading = false; });
             },
-            error => { this.alertService.error("Error getting data."); this.loading = false; });
+                error => { this.alertService.error("Error getting data."); this.loading = false; });
         },
-        error => { this.alertService.error("Error getting data."); this.loading = false; });
+            error => { this.alertService.error("Error getting data."); this.loading = false; });
     }
 
     grade(examID: number) {
@@ -115,71 +115,95 @@ export class ExamComponent implements OnInit {
         this.examService.getByIdForCensoring(examID).subscribe(e => {
             this.ExamGradeDataTransferService.currentExam = e;
 
-                this.examAttemptService.getByExam(examID).subscribe(data => {
-                    this.ExamGradeDataTransferService.examAttempts = data;
+            this.examAttemptService.getByExam(examID).subscribe(data => {
+                this.ExamGradeDataTransferService.examAttempts = data;
 
-                    this.loading = false;
-                    this.router.navigateByUrl('/grade/' + examID + '/edit');
-                },
+                this.loading = false;
+                this.router.navigateByUrl('/grade/' + examID + '/edit');
+            },
                 error => { this.alertService.error("Error geting data."); this.loading = false; });
         },
-        error => { this.alertService.error("Error geting data."); this.loading = false; });
+            error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
-    
+
     generateReports(examID: number) {
         this.loading = true;
 
         this.examService.getByIdForCensoring(examID).subscribe(e => {
             this.ExamReportDTS.currentExam = e;
 
-                this.examAttemptService.getByExam(examID).subscribe(data => {
-                    this.ExamReportDTS.examAttempts = data;
+            this.examAttemptService.getByExam(examID).subscribe(data => {
+                this.ExamReportDTS.examAttempts = data;
 
-                    this.userService.getAll().subscribe(usrs => {
-                        let users:User[] = usrs;
-                        this.ExamReportDTS.examAttempts.forEach(attempt => {
+                this.userService.getAll().subscribe(usrs => {
+                    let users: User[] = usrs;
+                    this.ExamReportDTS.examAttempts.forEach(attempt => {
 
-                            attempt.student = users.find(x=> x.id == attempt.studentID);
+                        attempt.student = users.find(x => x.id == attempt.studentID);
 
-                            attempt.anwsers.forEach(anws => {
-                                anws.question = this.ExamReportDTS.currentExam.questions.find(x=> x.id == anws.questionID);
-                
-                                anws.mistakes.forEach(mistake => {
-                                    mistake.argument = anws.question.arguments.find(x=> x.id == mistake.argumentID);
-                                });
-                            });
-                
-                            attempt.examAdvices.forEach(advice => {
-                                advice.examCriterea = this.ExamReportDTS.currentExam.examCriterea.find(x=> x.id == advice.examCritereaID);
-                                advice.advice = advice.examCriterea.advices.find(x=> x.id == advice.adviceID);
-                                
+                        attempt.anwsers.forEach(anws => {
+                            anws.question = this.ExamReportDTS.currentExam.questions.find(x => x.id == anws.questionID);
+
+                            anws.mistakes.forEach(mistake => {
+                                mistake.argument = anws.question.arguments.find(x => x.id == mistake.argumentID);
                             });
                         });
-                        
-                        this.loading = false;
-                        this.router.navigateByUrl('exam/report/' + examID );
-                    },
-                    error => { this.alertService.error("Error geting data."); this.loading = false; });
+
+                        attempt.examAdvices.forEach(advice => {
+                            advice.examCriterea = this.ExamReportDTS.currentExam.examCriterea.find(x => x.id == advice.examCritereaID);
+                            advice.advice = advice.examCriterea.advices.find(x => x.id == advice.adviceID);
+
+                        });
+                    });
+
+                    this.loading = false;
+                    this.router.navigateByUrl('exam/report/' + examID);
                 },
+                    error => { this.alertService.error("Error geting data."); this.loading = false; });
+            },
                 error => { this.alertService.error("Error geting data."); this.loading = false; });
         },
-        error => { this.alertService.error("Error geting data."); this.loading = false; });
+            error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
 
-    exportCensorship(id: number) {
-        this.alertService.error("Waiting implementation");
-        
-        /*this.loading = true;
-        this.exportService.getAttempts(id).subscribe(
-            data => {
-                let blob = new Blob([data.blob()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-                let url = window.URL.createObjectURL(blob);
-                window.open(url);
-                this.loading = false;
+    exportCensorship(examID: number) {
+        this.loading = true;
+
+        this.examService.getByIdForCensoring(examID).subscribe(e => {
+            this.ExamReportDTS.currentExam = e;
+
+            this.examAttemptService.getByExam(examID).subscribe(data => {
+                this.ExamReportDTS.examAttempts = data;
+
+                this.userService.getAll().subscribe(usrs => {
+                    let users: User[] = usrs;
+                    this.ExamReportDTS.examAttempts.forEach(attempt => {
+
+                        attempt.student = users.find(x => x.id == attempt.studentID);
+
+                        attempt.anwsers.forEach(anws => {
+                            anws.question = this.ExamReportDTS.currentExam.questions.find(x => x.id == anws.questionID);
+
+                            anws.mistakes.forEach(mistake => {
+                                mistake.argument = anws.question.arguments.find(x => x.id == mistake.argumentID);
+                            });
+                        });
+
+                        attempt.examAdvices.forEach(advice => {
+                            advice.examCriterea = this.ExamReportDTS.currentExam.examCriterea.find(x => x.id == advice.examCritereaID);
+                            advice.advice = advice.examCriterea.advices.find(x => x.id == advice.adviceID);
+
+                        });
+                    });
+
+                    this.loading = false;
+                    this.router.navigateByUrl('exam/print/' + examID);
+                },
+                    error => { this.alertService.error("Error geting data."); this.loading = false; });
             },
-            error => { this.alertService.error("Error downloading file"); this.loading = false; },
-            () => console.log("OK!")
-        );/**/
+                error => { this.alertService.error("Error geting data."); this.loading = false; });
+        },
+            error => { this.alertService.error("Error geting data."); this.loading = false; });
     }
     export(id: number) {
         this.loading = true;

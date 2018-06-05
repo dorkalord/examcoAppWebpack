@@ -50,6 +50,7 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { ExamReportDataTransferService } from './_services/examReport-datatransfer.service.';
 import { CommonModule } from '@angular/common';
 import { PlotlyModule } from 'angular-plotly.js';
+import { printReportComponent } from './exam/report/printReport.component';
 
 @NgModule({
     imports: [
@@ -88,7 +89,8 @@ import { PlotlyModule } from 'angular-plotly.js';
         ExamAttemptArgumentComponent,
         UserListComponent,
         ExamGradeComponent,
-        ExamReportComponent
+        ExamReportComponent,
+        printReportComponent
     ],
     providers: [
         AppConfig,
