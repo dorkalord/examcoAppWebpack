@@ -51,6 +51,7 @@ import { ExamReportDataTransferService } from './_services/examReport-datatransf
 import { CommonModule } from '@angular/common';
 import { PlotlyModule } from 'angular-plotly.js';
 import { printReportComponent } from './exam/report/printReport.component';
+import { printALLReportComponent } from './exam/report/printAllReport.component';
 
 @NgModule({
     imports: [
@@ -90,7 +91,8 @@ import { printReportComponent } from './exam/report/printReport.component';
         UserListComponent,
         ExamGradeComponent,
         ExamReportComponent,
-        printReportComponent
+        printReportComponent,
+        printALLReportComponent
     ],
     providers: [
         AppConfig,

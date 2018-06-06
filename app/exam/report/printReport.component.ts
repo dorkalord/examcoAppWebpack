@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { User, Exam, ExamFull, Question2 } from '../../_models/index';
 import { UserService } from '../../_services/index';
@@ -9,10 +9,12 @@ import { ExamReportDataTransferService } from '../../_services/examReport-datatr
 declare var require: any;
 
 @Component({
+	selector: 'print-report',
 	templateUrl: 'printReport.component.html'
 })
 
 export class printReportComponent implements OnInit {
+	@Input('zaporedje') public podatki: number;
 	currentUser: User;
 	users: User[] = [];
 
@@ -52,7 +54,7 @@ export class printReportComponent implements OnInit {
 			}
 		],
 		font: { size: 16 },
-		layout: { title: 'Primerjava vače ocene s sošolci' }
+		layout: { title: 'Primerjava vaše ocene s sošolci', height: 280,  }
 	};
 
 	public graphs: any = [];
@@ -63,9 +65,9 @@ export class printReportComponent implements OnInit {
 		private examReportDTS: ExamReportDataTransferService) {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		this.currentExam = this.examReportDTS.currentExam;
-		this.gradeRadarChart.chartData = [{ data: [], label: 'Your score' }];
-		this.currentAttemptIndex = 0;
-
+		this.gradeRadarChart.chartData = [{ data: [], label: 'Uspešnost po kategorijah v primerjavi z drugimi' }];
+		
+		
 		this.graph.data[0].x = [];
 
 		this.examReportDTS.examAttempts.forEach(attempt => {
@@ -75,12 +77,17 @@ export class printReportComponent implements OnInit {
 
 			this.graph.data[0].x.push(attempt.finalTotal);
 		});
-
 		this.moveTo(0);
+		
 	}
 
 	ngOnInit() {
+		this.currentAttemptIndex = this.podatki;
 
+		console.log("podatki");
+		console.log(this.podatki);
+		this.moveTo(this.currentAttemptIndex);
+		
 	}
 
 	moveTo(i: number) {
@@ -90,7 +97,7 @@ export class printReportComponent implements OnInit {
 		this.graph.data[1].x = [];
 		this.graph.data[1].x.push(this.currentAttempt.finalTotal);
 
-		this.graphs = [];
+		/*this.graphs = [];
 		this.currentAttempt.anwsers.forEach(a => {
 			let tempGraph = {
 				data: [
@@ -98,18 +105,19 @@ export class printReportComponent implements OnInit {
 						x: [0],
 						y: a.question.text,
 						type: 'box',
-						name: 'Porazdelitev ocen'
+						name: 'Porazdelitev ocen',
+						marker: { color: 'rgba(44, 160, 101, 0.5)'}
 					},
 					{
 						x: [0],
 						y: a.question.text,
 						type: 'scater',
 						name: 'Vaša ocena',
-						marker: { size: 20 }
+						marker: { size: 20, color: 'rgb(255, 144, 14)'}
 					}
 				],
 				layout: {
-					height: 280, 
+					height: 270,
 					xaxis: {
 						title: 'Ocene [%]'
 					},
@@ -123,14 +131,13 @@ export class printReportComponent implements OnInit {
 			})
 
 			this.graphs.push(tempGraph);
-		})
+		});*/
 
 		this.gradeRadarChart.chartLabels = [];
 		this.gradeRadarChart.chartData = [
 			{ data: [], label: 'Your score', fill: false },
 			{ data: [], label: 'Average', fill: false },
-			{ data: [], label: 'Min', fill: false },
-			{ data: [], label: 'Max', fill: false }];
+			];
 
 		this.currentAttempt.examAdvices.forEach(advice => {
 			this.gradeRadarChart.chartLabels.push(advice.examCriterea.name);
@@ -139,13 +146,6 @@ export class printReportComponent implements OnInit {
 			this.gradeRadarChart.chartData[1].data.push(
 				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
 					reduce((a, b) => a + b.total, 0) / this.currentAttempt.examAdvices.length);
-
-			this.gradeRadarChart.chartData[2].data.push(
-				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
-					reduce((min, p) => p.total < min ? p.total : min, 0));
-			this.gradeRadarChart.chartData[3].data.push(
-				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
-					reduce((max, p) => p.total > max ? p.total : max, 0));
 		});
 
 	}

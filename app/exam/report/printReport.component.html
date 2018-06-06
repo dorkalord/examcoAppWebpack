@@ -1,14 +1,16 @@
-<div class="" style="page-break-after: always;">
-	<h2>Študent: {{this.currentAttempt.student.name}} </h2>
+<div class="row" style="page-break-after: always;">
+	<h1 style="page-break-after: always;">Poročilo za: {{this.currentAttempt.student.name}} </h1>
 
-	<p>
-		Točke {{currentAttempt.total | number : '1.2-2' }} od 800
-		<br/> Končni odstotki {{currentAttempt.finalTotal | number : '1.2-2'}} %
-		<br/>
-	</p>
+	<h2>{{this.currentAttempt.student.name}}</h2>
+
 	<div class="container panel">
+		<p>
+			Examco točke {{currentAttempt.total | number : '1.2-2' }} od 800 <br/>
+			Examco odstotki {{currentAttempt.finalTotal | number : '1.2-2'}} % 	<br/>
+		</p>
 		<plotly-plot [data]="graph.data" [layout]="graph.layout"></plotly-plot>
 	</div>
+
 	<div class="container panel" *ngFor="let anws of currentAttempt.anwsers; let i=index">
 		<h3>{{anws.question.text}}</h3>
 		<div class="pull-right">
@@ -19,14 +21,18 @@
 			</p>
 		</div>
 		<div>
-			<h5>Točke: {{anws.finalTotal | number : '1.2-2'}} </h5>
-			<h5>Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} % </h5>
-			<p>Komentar: {{anws.note}} </p>
+			<h5>
+				Točke: {{anws.finalTotal | number : '1.2-2'}}
+			</h5>
+			<h5>
+				Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} %
+			</h5>
+			<h5 *ngIf="anws.note.lenght>1">Komentar: {{anws.note}} </h5>
 		</div>
 
 		<div class="row">
-			<div class="col-md-8">
-				<table class="table table-hover table-striped" *ngIf="anws.completion == 'Attempted'">
+			<div class="container panel">
+				<table class="table table-hover table-striped" *ngIf="anws.completion == 'Attempted' && anws.mistakes.lenght != 0">
 					<thead>
 						<tr>
 							<th>Napaka</th>
@@ -43,9 +49,9 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-4">
+			<!--<div class="container panel">
 				<plotly-plot [data]="graphs[i].data" [layout]="graphs[i].layout"></plotly-plot>
-			</div>
+			</div>-->
 		</div>
 	</div>
 
