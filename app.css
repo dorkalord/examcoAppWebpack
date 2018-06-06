@@ -35,15 +35,19 @@
     }
   
     h1 {
-      font: 28px "Times New Roman", Times, serif;
+      font: 56px "Times New Roman", Times, serif;
     }
   
     h2 {
-      font: 24px "Times New Roman", Times, serif;
+      font: 48px "Times New Roman", Times, serif;
     }
   
     h3 {
-      font: 20px "Times New Roman", Times, serif;
+      font: 40px "Times New Roman", Times, serif;
+    }
+
+    p {
+      font: 38px "Times New Roman", Times, serif;
     }
   
     /* Improve colour contrast of links */

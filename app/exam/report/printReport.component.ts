@@ -43,6 +43,9 @@ export class printReportComponent implements OnInit {
 		data: [
 			{
 				x: [0, 1, 1, 2, 3, 5, 8, 13, 21],
+				boxpoints: 'all',
+				jitter: 0.3,
+				pointpos: -1.8,
 				type: 'box',
 				name: 'Porazdelitev ocen'
 			},
@@ -54,7 +57,11 @@ export class printReportComponent implements OnInit {
 			}
 		],
 		font: { size: 16 },
-		layout: { title: 'Primerjava vaše ocene s sošolci', height: 280,  }
+		layout: {
+			title: 'Primerjava vaše ocene s sošolci',
+			showlegend: true,
+			legend: { "orientation": "h" }
+		}
 	};
 
 	public graphs: any = [];
@@ -66,8 +73,8 @@ export class printReportComponent implements OnInit {
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		this.currentExam = this.examReportDTS.currentExam;
 		this.gradeRadarChart.chartData = [{ data: [], label: 'Uspešnost po kategorijah v primerjavi z drugimi' }];
-		
-		
+
+
 		this.graph.data[0].x = [];
 
 		this.examReportDTS.examAttempts.forEach(attempt => {
@@ -78,7 +85,7 @@ export class printReportComponent implements OnInit {
 			this.graph.data[0].x.push(attempt.finalTotal);
 		});
 		this.moveTo(0);
-		
+
 	}
 
 	ngOnInit() {
@@ -87,7 +94,7 @@ export class printReportComponent implements OnInit {
 		console.log("podatki");
 		console.log(this.podatki);
 		this.moveTo(this.currentAttemptIndex);
-		
+
 	}
 
 	moveTo(i: number) {
@@ -137,7 +144,7 @@ export class printReportComponent implements OnInit {
 		this.gradeRadarChart.chartData = [
 			{ data: [], label: 'Your score', fill: false },
 			{ data: [], label: 'Average', fill: false },
-			];
+		];
 
 		this.currentAttempt.examAdvices.forEach(advice => {
 			this.gradeRadarChart.chartLabels.push(advice.examCriterea.name);

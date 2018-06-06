@@ -27,12 +27,15 @@
 			<h5>
 				Procenti: {{ anws.total - anws.adjustment}} + popravek: {{anws.adjustment}} = {{anws.total}} %
 			</h5>
-			<h5 *ngIf="anws.note.lenght>1">Komentar: {{anws.note}} </h5>
+			<div *ngIf="anws.note != null">
+				<h5>Komentar: {{anws.note}} </h5>
+			</div>
+			
 		</div>
 
-		<div class="row">
+		<div class="row" *ngIf="anws.completion == 'Attempted'">
 			<div class="container panel">
-				<table class="table table-hover table-striped" *ngIf="anws.completion == 'Attempted' && anws.mistakes.lenght != 0">
+				<table class="table table-hover table-striped" >
 					<thead>
 						<tr>
 							<th>Napaka</th>
