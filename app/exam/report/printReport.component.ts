@@ -31,13 +31,13 @@ export class printReportComponent implements OnInit {
 				text: 'Ocene',
 				fontSize: 20
 			},
-			fill: false,
 		},
 		chartLabels: [],
 		chartType: 'radar',
 		chartLegend: true,
 		chartData: []
 	};
+
 
 	public graph = {
 		data: [
@@ -60,7 +60,11 @@ export class printReportComponent implements OnInit {
 		layout: {
 			title: 'Primerjava vaše ocene s sošolci',
 			showlegend: true,
-			legend: { "orientation": "h" }
+			legend: { "orientation": "h"
+			 },
+			 autosize: false,
+			 width: 786,
+			 height: 300
 		}
 	};
 
@@ -142,18 +146,31 @@ export class printReportComponent implements OnInit {
 
 		this.gradeRadarChart.chartLabels = [];
 		this.gradeRadarChart.chartData = [
-			{ data: [], label: 'Your score', fill: false },
-			{ data: [], label: 'Average', fill: false },
+			{
+				data: [], label: 'Vi', fill: false,
+				borderColor: "rgba(0, 0, 0,1)",
+				backgroundColor: "rgba(0, 0, 0,1)",
+				borderWidth: 5,
+				radius: 10,
+				pointRadius: 10,
+				pointBorderWidth: 10,
+				pointHoverRadius: 10,
+				pointStyle: 'cross'
+			},
+			{ data: [], label: 'Povprečje', fill: false },
 		];
 
 		this.currentAttempt.examAdvices.forEach(advice => {
 			this.gradeRadarChart.chartLabels.push(advice.examCriterea.name);
 			this.gradeRadarChart.chartData[0].data.push(advice.total);
 
+
+
 			this.gradeRadarChart.chartData[1].data.push(
 				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
-					reduce((a, b) => a + b.total, 0) / this.currentAttempt.examAdvices.length);
+					reduce((a, b) => a + b.total / this.currentAttempt.examAdvices.length, 0) );
 		});
+		this.gradeRadarChart.chartData[0].pointBorderColor = "rgba(0,0,0,1)";
 
 	}
 
