@@ -157,7 +157,7 @@ export class printReportComponent implements OnInit {
 				pointHoverRadius: 10,
 				pointStyle: 'cross'
 			},
-			{ data: [], label: 'Povprečje', fill: false },
+			//{ data: [], label: 'Povprečje', fill: false },
 		];
 
 		this.currentAttempt.examAdvices.forEach(advice => {
@@ -166,9 +166,9 @@ export class printReportComponent implements OnInit {
 
 
 
-			this.gradeRadarChart.chartData[1].data.push(
+			/*this.gradeRadarChart.chartData[1].data.push(
 				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
-					reduce((a, b) => a + b.total / this.currentAttempt.examAdvices.length, 0) );
+					reduce((a, b) => a + b.total / this.currentAttempt.examAdvices.length, 0) );*/
 		});
 		this.gradeRadarChart.chartData[0].pointBorderColor = "rgba(0,0,0,1)";
 

@@ -1,7 +1,7 @@
-<div class="" style="page-break-after: always; background: white">
+<div class=" background: white">
 		<h1 style="page-break-after: always;">Poročilo za: {{this.currentAttempt.student.name}} </h1>
 	
-		<h2>{{this.currentAttempt.student.name}}</h2>
+		<!--<h2>{{this.currentAttempt.student.name}}</h2>
 	
 		<div class="">
 			<p>
@@ -16,7 +16,7 @@
 			<div class="">
 				<p>
 					<span class="" *ngIf="anws.completion == 'Correct'">Pravilno</span>
-					<!--<span class="" *ngIf="anws.completion == 'Attempted'">Delno pravilno</span>-->
+					
 					<span class="" *ngIf="anws.completion == 'Blank'">Prazno</span>
 				</p>
 			</div>
@@ -50,15 +50,13 @@
 						</tbody>
 					</table>
 				</div>
-				<!--<div class="">
-					<plotly-plot [data]="graphs[i].data" [layout]="graphs[i].layout"></plotly-plot>
-				</div>-->
+
 			</div>
 			<hr style="border-top: 1px solid gray">
-		</div>
+		</div>-->
 	
 		<div class="">
-			<h3>Dosežki po različnih kriterijih</h3>
+			<!--<h3>Dosežki po različnih kriterijih</h3>
 			<div>
 				<table class="table">
 					<thead>
@@ -78,7 +76,7 @@
 	
 	
 				</table>
-			</div>
+			</div>-->
 			<div class="">
 				<div style="display: block">
 					<canvas baseChart [(datasets)]="gradeRadarChart.chartData" [labels]="gradeRadarChart.chartLabels" [options]="gradeRadarChart.chartOptions"
