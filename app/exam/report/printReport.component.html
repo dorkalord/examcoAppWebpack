@@ -1,7 +1,7 @@
-<div class=" background: white">
-		<h1 style="page-break-after: always;">Poročilo za: {{this.currentAttempt.student.name}} </h1>
+<div class="page-break-after: avoid; background: white">
+		<h1 style="page-break-after: always; page-break-before: always">Poročilo za: {{this.currentAttempt.student.name}} </h1>
 	
-		<!--<h2>{{this.currentAttempt.student.name}}</h2>
+		<h2>{{this.currentAttempt.student.name}}</h2>
 	
 		<div class="">
 			<p>
@@ -53,10 +53,10 @@
 
 			</div>
 			<hr style="border-top: 1px solid gray">
-		</div>-->
+		</div>
 	
 		<div class="">
-			<!--<h3>Dosežki po različnih kriterijih</h3>
+			<h3>Dosežki po različnih kriterijih</h3>
 			<div>
 				<table class="table">
 					<thead>
@@ -76,7 +76,7 @@
 	
 	
 				</table>
-			</div>-->
+			</div>
 			<div class="">
 				<div style="display: block">
 					<canvas baseChart [(datasets)]="gradeRadarChart.chartData" [labels]="gradeRadarChart.chartLabels" [options]="gradeRadarChart.chartOptions"

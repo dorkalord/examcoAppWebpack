@@ -78,7 +78,7 @@ export class printReportComponent implements OnInit {
 		this.currentExam = this.examReportDTS.currentExam;
 		this.gradeRadarChart.chartData = [{ data: [], label: 'Uspešnost po kategorijah v primerjavi z drugimi' }];
 
-
+			
 		this.graph.data[0].x = [];
 
 		this.examReportDTS.examAttempts.forEach(attempt => {
@@ -157,18 +157,16 @@ export class printReportComponent implements OnInit {
 				pointHoverRadius: 10,
 				pointStyle: 'cross'
 			},
-			//{ data: [], label: 'Povprečje', fill: false },
+			{ data: [], label: 'Povprečje', fill: false },
 		];
 
 		this.currentAttempt.examAdvices.forEach(advice => {
 			this.gradeRadarChart.chartLabels.push(advice.examCriterea.name);
 			this.gradeRadarChart.chartData[0].data.push(advice.total);
-
-
-
-			/*this.gradeRadarChart.chartData[1].data.push(
-				this.allExamAdvices.filter(x => x.examCritereaID == advice.examCritereaID).
-					reduce((a, b) => a + b.total / this.currentAttempt.examAdvices.length, 0) );*/
+ 
+			this.gradeRadarChart.chartData[1].data.push(
+				this.allExamAdvices.filter(x => x.examCritereaID == advice. examCritereaID).
+					reduce((a, b) => a + b.total, 0) / this.examReportDTS.examAttempts.length);/**/
 		});
 		this.gradeRadarChart.chartData[0].pointBorderColor = "rgba(0,0,0,1)";
 
